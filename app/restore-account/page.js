@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
+import { storeAccountDetails } from "@/utils/auth";
 
 const RestoreAccount = () => {
   const [mnemonic, setMnemonic] = useState("");
@@ -12,6 +13,8 @@ const RestoreAccount = () => {
   const handleMnemonicSubmit = (e) => {
     e.preventDefault();
     const restoredAccount = getAccountFromMnemonic(mnemonic);
+    // Encrypt and Store mnemonic in local storage
+    storeAccountDetails(mnemonic, password);
     router.push(`/account?address=${restoredAccount.address}`);
   };
 

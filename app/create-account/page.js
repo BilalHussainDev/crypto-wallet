@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { generateMnemonic, getAccountFromMnemonic } from "@/utils/mnemonic";
-import { storeMnemonic } from "@/utils/storage";
+import { storeAccountDetails } from "@/utils/auth";
 
 const CreateAccount = () => {
   const [password, setPassword] = useState("");
@@ -18,7 +18,7 @@ const CreateAccount = () => {
     // remember mnemonic
     setMnemonic(generatedMnemonic);
     // Encrypt and Store mnemonic in local storage
-    storeMnemonic(mnemonic, password);
+    storeAccountDetails(mnemonic, password);
   };
 
   const handleDone = () => {

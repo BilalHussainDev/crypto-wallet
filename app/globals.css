@@ -9,6 +9,10 @@ a {
   text-decoration: none;
 }
 
+ul {
+  list-style: none;
+}
+
 button {
   margin: 10px;
 }

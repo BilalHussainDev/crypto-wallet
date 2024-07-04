@@ -1,6 +1,6 @@
-import Web3 from "web3";
+import { getWeb3 } from "./web3";
 
-const web3 = new Web3("http://127.0.0.1:7545");
+const web3 = getWeb3();
 
 export const sendTransaction = async (from, to, value) => {
   const transactionParameters = {
@@ -9,9 +9,10 @@ export const sendTransaction = async (from, to, value) => {
     value: web3.utils.toWei(value, "ether"),
   };
   try {
-    const txHash = await web3.eth.sendTransaction(transactionParameters);
-    console.log("Transaction successful:", txHash);
+    await web3.eth.sendTransaction(transactionParameters);
+    return true;
   } catch (error) {
     console.error("Transaction failed:", error);
+    return false;
   }
 };
