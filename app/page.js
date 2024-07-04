@@ -1,9 +1,17 @@
-import styles from "./page.module.css";
+import Link from "next/link";
 
-export default function Home() {
+const Home = () => {
   return (
-    <main className={styles.main}>
-      <h2>Crypto Wallet</h2>
-    </main>
+    <div>
+      <h1>My Crypto Wallet</h1>
+      <button>
+        <Link href="/create-account">Create Account</Link>
+      </button>
+      <button>
+        <Link href="/restore-account">Restore Account</Link>
+      </button>
+    </div>
   );
-}
+};
+
+export default Home;
