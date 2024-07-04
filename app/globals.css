@@ -8,3 +8,15 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+button {
+  margin: 10px;
+}
+
+.container {
+  width: 90%;
+  max-width: 30rem;
+  margin: 0 auto;
+  border: 1px solid rgb(204, 204, 204);
+  text-align: center;
+}
