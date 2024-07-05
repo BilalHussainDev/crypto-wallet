@@ -15,7 +15,7 @@ const RestoreAccount = () => {
     const restoredAccount = getAccountFromMnemonic(mnemonic);
     // Encrypt and Store mnemonic in local storage
     storeAccountDetails(mnemonic, password);
-    router.push(`/account?address=${restoredAccount.address}`);
+    router.push(`/account/${restoredAccount.address}`);
   };
 
   return (

@@ -23,7 +23,7 @@ const CreateAccount = () => {
 
   const handleDone = () => {
     const newAccount = getAccountFromMnemonic(mnemonic);
-    router.push(`/account?address=${newAccount.address}`);
+    router.push(`/account/${newAccount.address}`);
   };
 
   return (

@@ -8,7 +8,7 @@ import { getWeb3 } from "@/utils/web3";
 
 const web3 = getWeb3();
 
-const Account = ({ params }) => {
+const AccountDetails = ({ params }) => {
   const address = params.address;
 
   const [balance, setBalance] = useState("");
@@ -58,4 +58,4 @@ const Account = ({ params }) => {
   );
 };
 
-export default Account;
+export default AccountDetails;

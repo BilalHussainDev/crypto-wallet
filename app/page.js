@@ -26,27 +26,27 @@ const Home = () => {
   return (
     <>
       <Box>
-        <Image src="/img/ethereum.png" alt="ETH" width={150} height={150} />
+        <Image src="/img/ethereum.png" alt="ETH" width={150} height={150} priority />
       </Box>
-
-      <Typography sx={{ color: "#dfffff", mb: "2rem" }}>
-        Welcome to next generation crypto wallet exchange, the most complete
-        dapp solution.
-      </Typography>
 
       {isNewUser === null && <CircularProgress />}
 
       {isNewUser === true && (
         <>
+          <Typography sx={{ color: "#06213c", mb: "2rem" }}>
+            Welcome to next generation crypto wallet exchange, the most complete
+            dapp solution.
+          </Typography>
+
           <Button
-            sx={{ width: "90%", marginBottom: "1.5rem" }}
+            sx={{ width: "80%", marginBottom: "1.5rem" }}
             color="primary"
             variant="contained"
           >
             <Link href="/create-account">Create Account</Link>
           </Button>
 
-          <Button sx={{ width: "90%" }} color="primary" variant="contained">
+          <Button sx={{ width: "80%" }} color="primary" variant="contained">
             <Link href="/restore-account">Import Account</Link>
           </Button>
         </>
