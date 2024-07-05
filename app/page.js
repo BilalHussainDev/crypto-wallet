@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 
 const Home = () => {
   const [isNewUser, setIsNewUser] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -15,15 +17,25 @@ const Home = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isNewUser === false) {
+      router.push("/unlock-account");
+    }
+  }, [isNewUser]);
+
   return (
     <>
       <Box>
         <Image src="/img/ethereum.png" alt="ETH" width={150} height={150} />
       </Box>
+
       <Typography sx={{ color: "#dfffff", mb: "2rem" }}>
         Welcome to next generation crypto wallet exchange, the most complete
         dapp solution.
       </Typography>
+
+      {isNewUser === null && <CircularProgress />}
+
       {isNewUser === true && (
         <>
           <Button
@@ -33,24 +45,11 @@ const Home = () => {
           >
             <Link href="/create-account">Create Account</Link>
           </Button>
+
           <Button sx={{ width: "90%" }} color="primary" variant="contained">
             <Link href="/restore-account">Import Account</Link>
           </Button>
         </>
-      )}
-      {isNewUser === false && (
-        <p>
-          <button>
-            <Link href="/unlock-account">Unlock Account</Link>
-          </button>
-          or &nbsp;
-          <Link
-            href="/restore-account"
-            style={{ fontSize: "14px", color: "blue" }}
-          >
-            Restore Account
-          </Link>
-        </p>
       )}
     </>
   );
