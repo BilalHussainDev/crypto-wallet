@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Box, Button, Typography } from "@mui/material";
+import Image from "next/image";
 
 const Home = () => {
   const [isNewUser, setIsNewUser] = useState(null);
@@ -14,16 +16,26 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <h1>My Crypto Wallet</h1>
+    <>
+      <Box>
+        <Image src="/img/ethereum.png" alt="ETH" width={150} height={150} />
+      </Box>
+      <Typography sx={{ color: "#dfffff", mb: "2rem" }}>
+        Welcome to next generation crypto wallet exchange, the most complete
+        dapp solution.
+      </Typography>
       {isNewUser === true && (
         <>
-          <button>
+          <Button
+            sx={{ width: "90%", marginBottom: "1.5rem" }}
+            color="primary"
+            variant="contained"
+          >
             <Link href="/create-account">Create Account</Link>
-          </button>
-          <button>
-            <Link href="/restore-account">Restore Account</Link>
-          </button>
+          </Button>
+          <Button sx={{ width: "90%" }} color="primary" variant="contained">
+            <Link href="/restore-account">Import Account</Link>
+          </Button>
         </>
       )}
       {isNewUser === false && (
@@ -40,7 +52,7 @@ const Home = () => {
           </Link>
         </p>
       )}
-    </div>
+    </>
   );
 };
 
