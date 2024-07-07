@@ -37,7 +37,7 @@ const Home = () => {
 						color="primary"
 						variant="contained"
 					>
-						<Link href="/create-account">Create New Wallet</Link>
+						<Link href="/create-wallet">Create New Wallet</Link>
 					</Button>
 
 					<Button
