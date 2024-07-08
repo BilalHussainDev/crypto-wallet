@@ -22,13 +22,17 @@ const formSchema = object({
 const UnlockAccount = () => {
   const router = useRouter();
 
-  const handlePasswordSubmit = (data, { resetForm, setErrors }) => {
+  const handlePasswordSubmit = (
+    data,
+    { resetForm, setErrors, setSubmitting }
+  ) => {
     // get encryptedKey from the localStorage
     const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
     // decrypt the encrypted key
     const decrypted = decrypt(encryptedKey, data.password);
     if (!decrypted.ok) {
-      setErrors({ password: "Something wents wrong. Try again." });
+      setErrors({ password: "Incorrect password." });
+      setSubmitting(false);
       return;
     } else {
       const res = getAccountFromMnemonic(decrypted.key);

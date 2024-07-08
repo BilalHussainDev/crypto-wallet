@@ -41,12 +41,11 @@ function ReceiveFundsComponent() {
       <Typography
         style={{
           mt: "2rem",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
+          textWrap: "wrap",
+          overflowWrap: "break-word",
         }}
       >
-        Address: {address}
+        {address}
       </Typography>
     </>
   );
