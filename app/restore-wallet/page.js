@@ -3,24 +3,31 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import { storeAccountDetails } from "@/utils/auth";
+import { Typography } from "@mui/material";
+import { encrypt } from "@/utils/encrypt";
 
-const RestoreAccount = () => {
+const RestoreWallet = () => {
   const [mnemonic, setMnemonic] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleMnemonicSubmit = (e) => {
     e.preventDefault();
-    const restoredAccount = getAccountFromMnemonic(mnemonic);
-    // Encrypt and Store mnemonic in local storage
-    storeAccountDetails(mnemonic, password);
+    // encrypt mnemonic
+    const encrypted = encrypt(mnemonic, password);
+    if (encrypted.ok) {
+      // store encrypted mnemonic
+      localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
+    }
+    const res = getAccountFromMnemonic(mnemonic);
     router.push(`/dashboard?address=${res.address}`);
   };
 
   return (
-    <div>
-      <h1>Restore Account</h1>
+    <>
+      <Typography variant="h4" sx={{ pt: "1rem" }}>
+        Restore Account
+      </Typography>
       <form onSubmit={handleMnemonicSubmit}>
         <p>
           <label htmlFor="phrase">Enter your secret phrase: </label>
@@ -44,8 +51,8 @@ const RestoreAccount = () => {
         </p>
         <button type="submit">Restore Account</button>
       </form>
-    </div>
+    </>
   );
 };
 
-export default RestoreAccount;
+export default RestoreWallet;
