@@ -79,7 +79,7 @@ function DashboardComponent() {
           variant="outlined"
         >
           <Link
-            href={`/recieve-funds?address=${address}`}
+            href={`/receive-funds?address=${address}`}
             style={{ width: "100%" }}
           >
             Recieve
