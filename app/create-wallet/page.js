@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
 	Box,
 	Button,
@@ -13,7 +12,7 @@ import {
 import { useFormik } from "formik";
 import { object, string, ref } from "yup";
 import { Logo, PasswordField } from "@/components";
-import { generateMnemonic, getAccountFromMnemonic } from "@/utils/mnemonic";
+import { generateMnemonic } from "@/utils/mnemonic";
 import { encrypt } from "@/utils/encrypt";
 
 // 1 uppercase, 1 lowercase, 1 numeric and 1 special character
@@ -34,8 +33,7 @@ const formSchema = object({
 
 const CreateAccount = () => {
 	const [mnemonic, setMnemonic] = useState("");
-
-	const router = useRouter();
+	const [isCreated, setIsCreated] = useState(false);
 
 	const handlePasswordSubmit = async (data, { resetForm }) => {
 		// generate mnemonic
@@ -43,16 +41,13 @@ const CreateAccount = () => {
 		// remember mnemonic
 		setMnemonic(generatedMnemonic);
 		// encrypt mnemonic
-		const encryptedMnemonic = encrypt(generatedMnemonic, data.password);
-		// store encrypted mnemonic
-		localStorage.setItem("encryptedKey", JSON.stringify(encryptedMnemonic));
-		// clear the form
-		resetForm();
-	};
-
-	const handleDone = () => {
-		const newAccount = getAccountFromMnemonic(mnemonic);
-		router.push(`/account/${newAccount.address}`);
+		const encrypted = encrypt(generatedMnemonic, data.password);
+		if (encrypted.ok) {
+			// store encrypted mnemonic
+			localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
+			// clear the form
+			resetForm();
+		}
 	};
 
 	// Extracting Form State and Helper Methods from formik
@@ -77,7 +72,7 @@ const CreateAccount = () => {
 		<>
 			<Logo />
 
-			{!mnemonic ? (
+			{!mnemonic && !isCreated && (
 				<>
 					<Typography sx={{ color: "#06213c", mb: "2rem" }}>
 						Choose a password for your wallet
@@ -141,8 +136,20 @@ const CreateAccount = () => {
 							{isSubmitting ? "Please Wait" : "Continue"}
 						</Button>
 					</Box>
+
+					<Typography
+						variant="body2"
+						type="button"
+						color="primary"
+						textAlign="center"
+						mt="1rem"
+					>
+						<Link href="/">Cancel</Link>
+					</Typography>
 				</>
-			) : (
+			)}
+
+			{mnemonic !== "" && !isCreated && (
 				<>
 					<Typography sx={{ color: "#06213c", mb: "2rem" }}>
 						Write down the secret phrase and store in a secure
@@ -160,19 +167,47 @@ const CreateAccount = () => {
 						{mnemonic}
 					</Typography>
 
-					<Button fullWidth variant="contained" onClick={handleDone}>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={() => setIsCreated(true)}
+					>
 						Continue
+					</Button>
+
+					<Typography
+						variant="body2"
+						color="primary"
+						textAlign="center"
+						mt="1rem"
+					>
+						<Link href="/">Cancel</Link>
+					</Typography>
+				</>
+			)}
+
+			{mnemonic !== "" && isCreated && (
+				<>
+					<Typography sx={{ color: "green", mb: "2rem" }}>
+						Your Wallet has been created successfully.
+					</Typography>
+
+					<Typography
+						sx={{ color: "green", fontSize: "2rem", mb: "2rem" }}
+					>
+						✅
+					</Typography>
+
+					<Button
+						sx={{ width: "80%", height: "34px", padding: "0" }}
+						variant="contained"
+					>
+						<Link href="/unlock-wallet" style={{ width: "100%" }}>
+							Continue
+						</Link>
 					</Button>
 				</>
 			)}
-			<Typography
-				variant="body2"
-				color="primary"
-				textAlign="center"
-				mt="1rem"
-			>
-				<Link href="/">Cancel</Link>
-			</Typography>
 		</>
 	);
 };

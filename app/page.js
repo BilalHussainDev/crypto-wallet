@@ -16,7 +16,7 @@ const Home = () => {
 			if (value === null) {
 				setIsNewUser(true);
 			} else {
-				router.push("/unlock-account");
+				router.push("/unlock-wallet");
 			}
 		}
 	}, []);
@@ -45,7 +45,7 @@ const Home = () => {
 						color="primary"
 						variant="contained"
 					>
-						<Link href="/restore-account">Restore Wallet</Link>
+						<Link href="/restore-wallet">Restore Wallet</Link>
 					</Button>
 				</>
 			) : (
