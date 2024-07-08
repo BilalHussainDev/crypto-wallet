@@ -6,6 +6,8 @@ import SendTransaction from "@/components/SendTransaction";
 import ReceiveTransaction from "@/components/RecieveTransaction";
 import { getBalance, getTransactionHistory } from "@/utils/account";
 import { getWeb3 } from "@/utils/web3";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const web3 = getWeb3();
 
@@ -41,6 +43,32 @@ function DashboardComponent() {
         <h2>Balance</h2>
         <p>{(+balance || 0).toFixed(2)} ETH</p>
       </div>
+
+      <div>
+        <Button
+          sx={{ width: "40%", margin: "8px", height: "34px", padding: "0" }}
+          variant="outlined"
+        >
+          <Link
+            href={`/send-funds?address=${address}`}
+            style={{ width: "100%" }}
+          >
+            Send
+          </Link>
+        </Button>
+        <Button
+          sx={{ width: "40%", margin: "8px", height: "34px", padding: "0" }}
+          variant="outlined"
+        >
+          <Link
+            href={`/recieve-funds?address=${address}`}
+            style={{ width: "100%" }}
+          >
+            Recieve
+          </Link>
+        </Button>
+      </div>
+
       <div>
         <h2>Transaction History</h2>
         <ul>
@@ -54,8 +82,6 @@ function DashboardComponent() {
           ))}
         </ul>
       </div>
-      <SendTransaction from={address} />
-      <ReceiveTransaction address={address} />
     </div>
   );
 }
