@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -21,7 +22,9 @@ export default function Header() {
           color: "#0459ad",
         }}
       >
-        <Typography>Crypto Wallet</Typography>
+        <Typography>
+          <Link href="/">Crypto Wallet</Link>
+        </Typography>
       </Box>
       <Box
         sx={{

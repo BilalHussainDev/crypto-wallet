@@ -1,59 +1,144 @@
-import { useState } from "react";
-import { sendTransaction } from "@/utils/transaction";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useFormik } from "formik";
+import { object, string, number } from "yup";
+import { sendTransaction } from "@/utils/transaction";
 import { decrypt } from "@/utils/encrypt";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  OutlinedInput,
+  Typography,
+} from "@mui/material";
+import { PasswordField } from ".";
+
+// schema for reset password form or like that
+const formSchema = object({
+  to: string().required("Required"),
+  amount: number().positive("Invalid Amount").required("Required"),
+  password: string().required("Required"),
+});
 
 const SendTransaction = ({ from }) => {
-  const [to, setTo] = useState("");
-  const [value, setValue] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleTransferSubmit = async (data, { resetForm, setErrors }) => {
     const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
-    const { ok } = decrypt(encryptedKey, password);
+    const { ok } = decrypt(encryptedKey, data.password);
     if (!ok) {
-      throw new Error("Incorrect Password.");
+      setErrors({ password: "Incorrect Password." });
+      return;
     }
 
-    const success = await sendTransaction(from, to, value);
-    if (success) {
-      setTo("");
-      setValue("");
-      setPassword("");
+    const res = await sendTransaction(from, data.to, data.amount);
+    if (res.ok) {
       router.push(`/dashboard?address=${from}`);
+      resetForm();
     } else {
-      throw new Error("Transaction Failed. Try again later");
+      console.log("setting error");
+      setErrors({ to: res.message });
     }
   };
 
+  // Extracting Form State and Helper Methods from formik
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      to: "",
+      amount: "",
+      password: "",
+    },
+    validationSchema: formSchema,
+    onSubmit: handleTransferSubmit,
+  });
+
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Send</h2>
-      <div>
-        <label>Recipient Address: </label>
-        <input value={to} onChange={(e) => setTo(e.target.value)} required />
-      </div>
-      <div>
-        <label>Amount (ETH): </label>
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Password: </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Send</button>
-    </form>
+    <>
+      <Typography
+        variant="body2"
+        type="button"
+        color="primary"
+        textAlign="center"
+        padding="0.5rem 0"
+        sx={{ fontSize: "2.5rem", textAlign: "left" }}
+      >
+        <Link href={`/dashboard?address=${from}`}>⬅</Link>
+      </Typography>
+
+      <Typography
+        component="h1"
+        variant="h5"
+        sx={{ mb: "2rem", fontWeight: "bold" }}
+      >
+        Transfer Funds
+      </Typography>
+
+      <Box component="form" onSubmit={handleSubmit} autoComplete="off">
+        <FormControl fullWidth sx={{ minHeight: "80px" }}>
+          <OutlinedInput
+            name="to"
+            placeholder="Enter receiver address"
+            value={values.to}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={isSubmitting}
+            error={errors.to && touched.to ? true : false}
+          />
+          <FormHelperText sx={{ color: "red" }}>
+            {errors.to && touched.to ? errors.to : ""}
+          </FormHelperText>
+        </FormControl>
+
+        <FormControl fullWidth sx={{ minHeight: "80px" }}>
+          <OutlinedInput
+            name="amount"
+            placeholder="Enter amount in eth"
+            type="number"
+            value={values.amount}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={isSubmitting}
+            error={errors.amount && touched.amount ? true : false}
+          />
+          <FormHelperText sx={{ color: "red" }}>
+            {errors.amount && touched.amount ? errors.amount : ""}
+          </FormHelperText>
+        </FormControl>
+
+        <FormControl fullWidth sx={{ minHeight: "80px" }}>
+          <PasswordField
+            name="password"
+            placeholder="Enter your password"
+            value={values.password}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={isSubmitting}
+            error={errors.password && touched.password ? true : false}
+          />
+          <FormHelperText sx={{ color: "red" }}>
+            {errors.password && touched.password ? errors.password : ""}
+          </FormHelperText>
+        </FormControl>
+
+        <Button
+          fullWidth
+          type="submit"
+          variant="contained"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Please Wait" : "Transfer"}
+        </Button>
+      </Box>
+    </>
   );
 };
 

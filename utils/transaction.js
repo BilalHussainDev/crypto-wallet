@@ -10,9 +10,14 @@ export const sendTransaction = async (from, to, value) => {
   };
   try {
     await web3.eth.sendTransaction(transactionParameters);
-    return true;
+    return {
+      ok: true,
+      message: "Transaction Successfull",
+    };
   } catch (error) {
-    console.error("Transaction failed:", error);
-    return false;
+    return {
+      ok: false,
+      message: "Invalid Address",
+    };
   }
 };
