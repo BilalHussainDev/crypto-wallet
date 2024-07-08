@@ -35,7 +35,7 @@ const CreateAccount = () => {
 	const [mnemonic, setMnemonic] = useState("");
 	const [isCreated, setIsCreated] = useState(false);
 
-	const handlePasswordSubmit = async (data, { resetForm }) => {
+	const handlePasswordSubmit = (data, { resetForm }) => {
 		// generate mnemonic
 		const generatedMnemonic = generateMnemonic();
 		// remember mnemonic

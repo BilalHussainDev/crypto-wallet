@@ -2,12 +2,11 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import SendTransaction from "@/components/SendTransaction";
-import ReceiveTransaction from "@/components/RecieveTransaction";
 import { getBalance, getTransactionHistory } from "@/utils/account";
 import { getWeb3 } from "@/utils/web3";
-import { Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
+import Image from "next/image";
 
 const web3 = getWeb3();
 
@@ -35,24 +34,35 @@ function DashboardComponent() {
   }
 
   return (
-    <div>
-      <h1>Account Details</h1>
-      <div>
-        <h2>Address</h2>
-        <p
-          style={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {address}
-        </p>
-        <h2>Balance</h2>
-        <p>{(+balance || 0).toFixed(2)} ETH</p>
-      </div>
+    <>
+      <Typography
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          textAlign: "center",
+          fontSize: "14px",
+          pt: "16px",
+        }}
+      >
+        {address}
+      </Typography>
 
-      <div>
+      <Box>
+        <Image
+          src="/img/ethereum.png"
+          alt="ETH"
+          width={100}
+          height={100}
+          priority
+        />
+      </Box>
+
+      <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
+        {balance} ETH
+      </Typography>
+
+      <Box sx={{ margin: "1rem 0" }}>
         <Button
           sx={{ width: "40%", margin: "8px", height: "34px", padding: "0" }}
           variant="outlined"
@@ -75,22 +85,28 @@ function DashboardComponent() {
             Recieve
           </Link>
         </Button>
-      </div>
+      </Box>
 
-      <div>
-        <h2>Transaction History</h2>
-        <ul>
+      <Box>
+        <Typography variant="h4" mb="1rem">
+          Activity
+        </Typography>
+        <Box component="ul">
           {transactions.map((tx, index) => (
-            <li key={index}>
-              <p>
-                {address === tx.from ? "SENT: " : "RECIEVED: "}
+            <Box
+              sx={{ borderBottom: "1px solid #19cfd2", padding: "0.5rem" }}
+              component="li"
+              key={index}
+            >
+              <Typography fontSize="14px">
+                {address === tx.from ? "Sent: " : "Recieved: "}
                 {web3.utils.fromWei(tx.value, "ether")} ETH
-              </p>
-            </li>
+              </Typography>
+            </Box>
           ))}
-        </ul>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </>
   );
 }
 
