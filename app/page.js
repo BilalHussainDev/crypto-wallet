@@ -11,15 +11,15 @@ const Home = () => {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (typeof window !== "undefined") {
-			const value = localStorage.getItem("encryptedKey");
-			if (value === null) {
-				setIsNewUser(true);
-			} else {
-				router.push("/unlock-wallet");
-			}
-		}
-	}, []);
+    if (typeof window !== "undefined") {
+      const value = localStorage.getItem("encryptedKey");
+      if (value === null) {
+        setIsNewUser(true);
+      } else {
+        router.push("/unlock-wallet");
+      }
+    }
+  }, [router]);
 
 	return (
 		<>

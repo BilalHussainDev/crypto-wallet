@@ -12,7 +12,7 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import { PasswordField } from "@/components";
+import { ButtonLoader, PasswordField } from "@/components";
 import { encrypt } from "@/utils/encrypt";
 import Link from "next/link";
 
@@ -37,15 +37,17 @@ const RestoreWallet = () => {
   const router = useRouter();
 
   const handleMnemonicSubmit = (data, { resetForm }) => {
-    // encrypt mnemonic
-    const encrypted = encrypt(data.mnemonic, data.password);
-    if (encrypted.ok) {
-      // store encrypted mnemonic
-      localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
-    }
-    const res = getAccountFromMnemonic(data.mnemonic);
-    router.push(`/dashboard?address=${res.address}`);
-    resetForm();
+    setTimeout(() => {
+      // encrypt mnemonic
+      const encrypted = encrypt(data.mnemonic, data.password);
+      if (encrypted.ok) {
+        // store encrypted mnemonic
+        localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
+      }
+      const res = getAccountFromMnemonic(data.mnemonic);
+      router.push(`/dashboard?address=${res.address}`);
+      resetForm();
+    }, 0);
   };
 
   // Extracting Form State and Helper Methods from formik
@@ -129,7 +131,7 @@ const RestoreWallet = () => {
           variant="contained"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Please Wait" : "Restore"}
+          {isSubmitting ? "Restoring . . . . ." : "Restore"}
         </Button>
       </Box>
 
@@ -139,8 +141,9 @@ const RestoreWallet = () => {
         color="primary"
         textAlign="center"
         mt="1rem"
+        disabled
       >
-        <Link href="/">Cancel</Link>
+        {isSubmitting ? <span>Cancel</span> : <Link href="/">Cancel</Link>}
       </Typography>
     </>
   );
