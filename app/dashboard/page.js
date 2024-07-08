@@ -88,23 +88,29 @@ function DashboardComponent() {
       </Box>
 
       <Box>
-        <Typography variant="h4" mb="1rem">
+        <Typography variant="h3" mb="1rem" fontSize="26px">
           Activity
         </Typography>
-        <Box component="ul">
-          {transactions.map((tx, index) => (
-            <Box
-              sx={{ borderBottom: "1px solid #19cfd2", padding: "0.5rem" }}
-              component="li"
-              key={index}
-            >
-              <Typography fontSize="14px">
-                {address === tx.from ? "Sent: " : "Recieved: "}
-                {web3.utils.fromWei(tx.value, "ether")} ETH
-              </Typography>
-            </Box>
-          ))}
-        </Box>
+        {transactions.length <= 0 ? (
+          <Typography mb="1rem" sx={{ color: "#8d9dab" }}>
+            No Transactions Yet
+          </Typography>
+        ) : (
+          <Box component="ul">
+            {transactions.map((tx, index) => (
+              <Box
+                sx={{ borderBottom: "1px solid #19cfd2", padding: "0.5rem" }}
+                component="li"
+                key={index}
+              >
+                <Typography fontSize="14px">
+                  {address === tx.from ? "Sent: " : "Recieved: "}
+                  {web3.utils.fromWei(tx.value, "ether")} ETH
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        )}
       </Box>
     </>
   );

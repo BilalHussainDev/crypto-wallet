@@ -1,5 +1,4 @@
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
@@ -24,7 +23,6 @@ const formSchema = object({
 
 const SendTransaction = ({ from }) => {
   const [isTransfered, setIsTransfered] = useState(false);
-  // const router = useRouter();
 
   const handleTransferSubmit = async (
     data,
@@ -39,13 +37,10 @@ const SendTransaction = ({ from }) => {
     }
 
     const res = await sendTransaction(from, data.to, data.amount);
-    console.log(res)
     if (res.ok) {
-      // router.push(`/dashboard?address=${from}`);
       setIsTransfered(true);
       resetForm();
     } else {
-      // console.log("setting error");
       setSubmitting(false);
       setErrors({ to: res.message });
     }
