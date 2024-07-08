@@ -39,7 +39,15 @@ function DashboardComponent() {
       <h1>Account Details</h1>
       <div>
         <h2>Address</h2>
-        <p>{address}</p>
+        <p
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {address}
+        </p>
         <h2>Balance</h2>
         <p>{(+balance || 0).toFixed(2)} ETH</p>
       </div>

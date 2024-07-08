@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { sendTransaction } from "@/utils/transaction";
 import { useRouter } from "next/navigation";
-import { verifyPassword } from "@/utils/auth";
+import { decrypt } from "@/utils/encrypt";
 
 const SendTransaction = ({ from }) => {
   const [to, setTo] = useState("");
@@ -11,8 +11,8 @@ const SendTransaction = ({ from }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { ok } = await verifyPassword(password);
-    console.log(ok);
+    const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
+    const { ok } = decrypt(encryptedKey, password);
     if (!ok) {
       throw new Error("Incorrect Password.");
     }
@@ -22,7 +22,7 @@ const SendTransaction = ({ from }) => {
       setTo("");
       setValue("");
       setPassword("");
-      router.push(`/account?address=${from}`);
+      router.push(`/dashboard?address=${from}`);
     } else {
       throw new Error("Transaction Failed. Try again later");
     }
