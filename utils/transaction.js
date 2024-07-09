@@ -2,15 +2,16 @@ import { getWeb3 } from "./web3";
 
 const web3 = getWeb3();
 
-export const sendTransaction = async (from, to, value) => {
-  // Validate the to address
-  if (!web3.utils.isAddress(to)) {
-    return {
-      ok: false,
-      message: "Invalid receiver address",
-    };
+export const isAddress = (address) => {
+    // Validate the to address
+  if (!web3.utils.isAddress(address)) {
+    return false;
+  } else {
+    return true;
   }
+}
 
+export const sendTransaction = async (from, to, value) => {
   const transactionParameters = {
     to,
     from,

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
-import { sendTransaction } from "@/utils/transaction";
+import { isAddress, sendTransaction } from "@/utils/transaction";
 import { decrypt } from "@/utils/encrypt";
 import {
   Box,
@@ -12,7 +12,7 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import { PasswordField, Logo } from ".";
+import { ButtonLoader, PasswordField, Logo } from ".";
 
 // schema for reset password form or like that
 const formSchema = object({
@@ -24,27 +24,39 @@ const formSchema = object({
 const SendTransaction = ({ from }) => {
   const [isTransfered, setIsTransfered] = useState(false);
 
-  const handleTransferSubmit = async (
-    data,
-    { resetForm, setErrors, setSubmitting }
-  ) => {
-    const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
-    const { ok } = decrypt(encryptedKey, data.password);
-    if (!ok) {
-      setErrors({ password: "Incorrect Password." });
-      setSubmitting(false)
+  async function handleTransferSubmit(data, actions) {
+    // Simulate a delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // check validity of address
+    const isValidAddress = isAddress(data.to);
+    if (!isValidAddress) {
+      actions.setErrors({ to: "Invalid receiver address" });
+      actions.setSubmitting(false);
       return;
     }
 
+    // check for password
+    const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
+    const { ok } = decrypt(encryptedKey, data.password);
+    if (!ok) {
+      actions.setErrors({ password: "Incorrect Password." });
+      actions.setSubmitting(false);
+      return;
+    }
+
+    // send transaction
     const res = await sendTransaction(from, data.to, data.amount);
     if (res.ok) {
       setIsTransfered(true);
-      resetForm();
+      actions.resetForm();
     } else {
-      setSubmitting(false);
-      setErrors({ to: res.message });
+      actions.setSubmitting(false);
+      actions.setErrors({
+        amount: "Transactoin Failed! Might be due to insufficent balance",
+      });
     }
-  };
+  }
 
   // Extracting Form State and Helper Methods from formik
   const {
@@ -133,14 +145,14 @@ const SendTransaction = ({ from }) => {
               </FormHelperText>
             </FormControl>
 
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Please Wait" : "Transfer"}
-            </Button>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Transfering....." : "Transfer"}
+              </Button>
           </Box>
         </>
       )}
