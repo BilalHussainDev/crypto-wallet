@@ -11,7 +11,7 @@ import {
   FormHelperText,
   Typography,
 } from "@mui/material";
-import { Logo, PasswordField } from "@/components";
+import { ButtonLoader, Logo, PasswordField } from "@/components";
 import { decrypt } from "@/utils/encrypt";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 
@@ -26,19 +26,21 @@ const UnlockAccount = () => {
     data,
     { resetForm, setErrors, setSubmitting }
   ) => {
-    // get encryptedKey from the localStorage
-    const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
-    // decrypt the encrypted key
-    const decrypted = decrypt(encryptedKey, data.password);
-    if (!decrypted.ok) {
-      setErrors({ password: "Incorrect password." });
-      setSubmitting(false);
-      return;
-    } else {
-      const res = getAccountFromMnemonic(decrypted.key);
-      router.push(`/dashboard?address=${res.address}`);
-      resetForm();
-    }
+    setTimeout(() => {
+      // get encryptedKey from the localStorage
+      const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
+      // decrypt the encrypted key
+      const decrypted = decrypt(encryptedKey, data.password);
+      if (!decrypted.ok) {
+        setErrors({ password: "Incorrect password." });
+        setSubmitting(false);
+        return;
+      } else {
+        const res = getAccountFromMnemonic(decrypted.key);
+        router.push(`/dashboard?address=${res.address}`);
+        resetForm();
+      }
+    }, 0);
   };
 
   // Extracting Form State and Helper Methods from formik
@@ -86,14 +88,19 @@ const UnlockAccount = () => {
           <Link href="/restore-wallet">Restore Account</Link>
         </Typography>
 
-        <Button
-          fullWidth
-          type="submit"
-          variant="contained"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Unlocking..." : "Unlock"}
-        </Button>
+        {isSubmitting ? (
+          <ButtonLoader>Unlocking.....</ButtonLoader>
+        ) : (
+          <Button
+            fullWidth
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting}
+            sx={{ height: "40px" }}
+          >
+            {isSubmitting ? "Unlocking....." : "Unlock"}
+          </Button>
+        )}
       </Box>
     </>
   );
