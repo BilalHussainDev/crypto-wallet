@@ -1,9 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import { object, string, ref } from "yup";
-import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ButtonLoader, PasswordField } from "@/components";
 import { encrypt } from "@/utils/encrypt";
-import Link from "next/link";
+import { getAccountFromMnemonic } from "@/utils/mnemonic";
 
 // 1 uppercase, 1 lowercase, 1 numeric and 1 special character
 const passwordRules = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).*$";
@@ -125,14 +125,19 @@ const RestoreWallet = () => {
           </FormHelperText>
         </FormControl>
 
-        <Button
-          fullWidth
-          type="submit"
-          variant="contained"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Restoring . . . . ." : "Restore"}
-        </Button>
+        {isSubmitting ? (
+          <ButtonLoader>Restoring.....</ButtonLoader>
+        ) : (
+          <Button
+            fullWidth
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting}
+            sx={{ height: "40px" }}
+          >
+            Restore
+          </Button>
+        )}
       </Box>
 
       <Typography
@@ -143,7 +148,11 @@ const RestoreWallet = () => {
         mt="1rem"
         disabled
       >
-        {isSubmitting ? <span>Cancel</span> : <Link href="/">Cancel</Link>}
+        {isSubmitting ? (
+          <span style={{ color: "#86a4c2" }}>Cancel</span>
+        ) : (
+          <Link href="/">Cancel</Link>
+        )}
       </Typography>
     </>
   );
