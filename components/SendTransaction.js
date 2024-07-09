@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { isAddress, sendTransaction } from "@/utils/transaction";
+import { getBalance} from "@/utils/account";
 import { decrypt } from "@/utils/encrypt";
 import {
   Box,
@@ -16,9 +17,9 @@ import { ButtonLoader, PasswordField, Logo } from ".";
 
 // schema for reset password form or like that
 const formSchema = object({
-  to: string().required("Required"),
-  amount: number().positive("Invalid Amount").required("Required"),
-  password: string().required("Required"),
+  to: string().required("Address is required"),
+  amount: number().positive("Enter valid amount").required("Amount is required"),
+  password: string().required("Password is required"),
 });
 
 const SendTransaction = ({ from }) => {
@@ -31,7 +32,15 @@ const SendTransaction = ({ from }) => {
     // check validity of address
     const isValidAddress = isAddress(data.to);
     if (!isValidAddress) {
-      actions.setErrors({ to: "Invalid receiver address" });
+      actions.setErrors({ to: "Address is invalid" });
+      actions.setSubmitting(false);
+      return;
+    }
+    
+    // check for enough balance
+    const balance = await getBalance(from);
+    if(data.amount > balance) {
+      actions.setErrors({ amount: "You don't have enough balance" });
       actions.setSubmitting(false);
       return;
     }
@@ -40,7 +49,7 @@ const SendTransaction = ({ from }) => {
     const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
     const { ok } = decrypt(encryptedKey, data.password);
     if (!ok) {
-      actions.setErrors({ password: "Incorrect Password." });
+      actions.setErrors({ password: "Invalid Password" });
       actions.setSubmitting(false);
       return;
     }
@@ -53,7 +62,7 @@ const SendTransaction = ({ from }) => {
     } else {
       actions.setSubmitting(false);
       actions.setErrors({
-        amount: "You might not have sufficent balance",
+        amount: res.message,
       });
     }
   }

@@ -16,7 +16,7 @@ import { decrypt } from "@/utils/encrypt";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 
 const formSchema = object({
-  password: string().required("Required"),
+  password: string().required("Password is required"),
 });
 
 const UnlockAccount = () => {
@@ -32,7 +32,7 @@ const UnlockAccount = () => {
       // decrypt the encrypted key
       const decrypted = decrypt(encryptedKey, data.password);
       if (!decrypted.ok) {
-        setErrors({ password: "Incorrect password." });
+        setErrors({ password: "Invalid Password" });
         setSubmitting(false);
         return;
       } else {

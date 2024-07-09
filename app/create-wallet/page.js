@@ -21,14 +21,15 @@ const passwordRules = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).*$";
 // schema for reset password form or like that
 const formSchema = object({
   password: string()
+    .min(8, "Password should be of at least 8 characters long")
     .matches(passwordRules, {
       message:
         "Must contain one uppercase, one lowercase, one number and one special character",
     })
-    .required("Required"),
+    .required("Password is required"),
   confirmPassword: string()
-    .oneOf([ref("password")], "Passwords must match")
-    .required("Required"),
+    .oneOf([ref("password")], "Both passwords need to be the same")
+    .required("Confirm password is required"),
 });
 
 const CreateAccount = () => {
