@@ -1,5 +1,7 @@
 import { getWeb3 } from "./web3";
 
+console.log(getWeb3)
+
 const web3 = getWeb3();
 
 export const isAddress = (address) => {

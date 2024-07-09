@@ -34,7 +34,7 @@ function DashboardComponent() {
   }
 
   return (
-    <>
+    <Box component='section'>
       <Typography
         sx={{
           whiteSpace: "nowrap",
@@ -62,11 +62,14 @@ function DashboardComponent() {
         {balance} ETH
       </Typography>
 
-      <Box sx={{ margin: "1rem 0" }}>
-        <Button
-          sx={{ width: "40%", margin: "8px", height: "34px", padding: "0" }}
-          variant="outlined"
-        >
+      <Box
+        sx={{
+          margin: "1.5rem 0",
+          display: "flex",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <Button sx={{ width: "96px", padding: '0', height: '2rem' }} variant="outlined">
           <Link
             href={`/send-funds?address=${address}`}
             style={{ width: "100%" }}
@@ -74,15 +77,20 @@ function DashboardComponent() {
             Send
           </Link>
         </Button>
-        <Button
-          sx={{ width: "40%", margin: "8px", height: "34px", padding: "0" }}
-          variant="outlined"
-        >
+        <Button sx={{ width: "96px", padding: '0', height: '2rem' }} variant="outlined">
           <Link
             href={`/receive-funds?address=${address}`}
             style={{ width: "100%" }}
           >
-            Recieve
+            Receive
+          </Link>
+        </Button>
+        <Button sx={{ width: "96px", padding: '0', height: '2rem' }} variant="outlined">
+          <Link
+            href={`/unlock-wallet`}
+            style={{ width: "100%" }}
+          >
+            Logout
           </Link>
         </Button>
       </Box>
@@ -112,7 +120,7 @@ function DashboardComponent() {
           </Box>
         )}
       </Box>
-    </>
+    </Box>
   );
 }
 

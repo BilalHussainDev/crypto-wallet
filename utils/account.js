@@ -10,7 +10,6 @@ export const getBalance = async (address) => {
 export const getTransactionHistory = async (address) => {
   const latestBlock = await web3.eth.getBlockNumber();
   const transactions = [];
-
   for (let i = 0; i <= latestBlock; i++) {
     const block = await web3.eth.getBlock(i, true);
     if (block && block.transactions) {
@@ -24,7 +23,5 @@ export const getTransactionHistory = async (address) => {
       });
     }
   }
-
-  // console.log(transactions);
   return transactions;
 };

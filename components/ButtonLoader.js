@@ -12,6 +12,8 @@ export default function ButtonLoader({ children }) {
         justifyContent: "center",
         color: "#ffffff",
         cursor: "default",
+        textTransform: 'uppercase',
+        fontSize: '0.875rem'
       }}
     >
       <Typography>{children}</Typography>

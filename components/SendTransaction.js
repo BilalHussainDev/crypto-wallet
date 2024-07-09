@@ -53,7 +53,7 @@ const SendTransaction = ({ from }) => {
     } else {
       actions.setSubmitting(false);
       actions.setErrors({
-        amount: "Transactoin Failed! Might be due to insufficent balance",
+        amount: "You might not have sufficent balance",
       });
     }
   }
@@ -145,14 +145,17 @@ const SendTransaction = ({ from }) => {
               </FormHelperText>
             </FormControl>
 
+            {isSubmitting ? <ButtonLoader>Transfering.....</ButtonLoader> : 
               <Button
                 fullWidth
                 type="submit"
                 variant="contained"
                 disabled={isSubmitting}
+                sx={{height: '40px'}}
               >
-                {isSubmitting ? "Transfering....." : "Transfer"}
+                Transfer
               </Button>
+            }
           </Box>
         </>
       )}
