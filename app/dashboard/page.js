@@ -1,12 +1,14 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { getBalance, getTransactionHistory } from "@/utils/account";
-import { getWeb3 } from "@/utils/web3";
-import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { Box, Button, Typography } from "@mui/material";
+
+import { getWeb3 } from "@/utils/web3";
+import { getBalance} from "@/utils/account";
+import { getTransactionHistory } from "@/utils/transaction";
 
 const web3 = getWeb3();
 
@@ -34,7 +36,7 @@ function DashboardComponent() {
   }
 
   return (
-    <Box component='section'>
+    <Box component="section">
       <Typography
         sx={{
           whiteSpace: "nowrap",
@@ -69,7 +71,10 @@ function DashboardComponent() {
           justifyContent: "space-evenly",
         }}
       >
-        <Button sx={{ width: "96px", padding: '0', height: '2rem' }} variant="outlined">
+        <Button
+          sx={{ width: "96px", padding: "0", height: "2rem" }}
+          variant="outlined"
+        >
           <Link
             href={`/send-funds?address=${address}`}
             style={{ width: "100%" }}
@@ -77,7 +82,10 @@ function DashboardComponent() {
             Send
           </Link>
         </Button>
-        <Button sx={{ width: "96px", padding: '0', height: '2rem' }} variant="outlined">
+        <Button
+          sx={{ width: "96px", padding: "0", height: "2rem" }}
+          variant="outlined"
+        >
           <Link
             href={`/receive-funds?address=${address}`}
             style={{ width: "100%" }}
@@ -85,11 +93,11 @@ function DashboardComponent() {
             Receive
           </Link>
         </Button>
-        <Button sx={{ width: "96px", padding: '0', height: '2rem' }} variant="outlined">
-          <Link
-            href={`/unlock-wallet`}
-            style={{ width: "100%" }}
-          >
+        <Button
+          sx={{ width: "96px", padding: "0", height: "2rem" }}
+          variant="outlined"
+        >
+          <Link href={`/unlock-wallet`} style={{ width: "100%" }}>
             Logout
           </Link>
         </Button>
@@ -107,13 +115,23 @@ function DashboardComponent() {
           <Box component="ul">
             {transactions.map((tx, index) => (
               <Box
-                sx={{ borderBottom: "1px solid #19cfd2", padding: "0.5rem" }}
+                sx={{
+                  borderBottom: "1px solid #1976d2",
+                  padding: "0.5rem",
+                  display: "grid",
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                }}
                 component="li"
                 key={index}
               >
-                <Typography fontSize="14px">
-                  {address === tx.from ? "Sent: " : "Recieved: "}
+                <Typography textAlign='left'>
+                  {tx.date}
+                </Typography>
+                <Typography sx={{color: '#1976d2', fontWeight: 'bold'}}>
                   {web3.utils.fromWei(tx.value, "ether")} ETH
+                </Typography>
+                <Typography textAlign='right'>
+                  {address === tx.from ? "Sent" : "Recieved "}
                 </Typography>
               </Box>
             ))}
