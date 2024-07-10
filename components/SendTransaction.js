@@ -2,28 +2,33 @@ import Link from "next/link";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
-import { isAddress, sendTransaction } from "@/utils/transaction";
-import { getBalance} from "@/utils/account";
-import { decrypt } from "@/utils/encrypt";
 import {
   Box,
   Button,
   FormControl,
   FormHelperText,
   OutlinedInput,
+  Tooltip,
   Typography,
 } from "@mui/material";
+
 import { ButtonLoader, PasswordField, Logo } from ".";
+import { decrypt } from "@/utils/encrypt";
+import { getBalance } from "@/utils/account";
+import { getAccountFromMnemonic } from "@/utils/mnemonic";
+import { isAddress, sendTransaction } from "@/utils/transaction";
 
 // schema for reset password form or like that
 const formSchema = object({
   to: string().required("Address is required"),
-  amount: number().positive("Enter valid amount").required("Amount is required"),
+  amount: number()
+    .positive("Enter valid amount")
+    .required("Amount is required"),
   password: string().required("Password is required"),
 });
 
 const SendTransaction = ({ from }) => {
-  const [isTransfered, setIsTransfered] = useState(false);
+  const [transactionHash, setTransactionHash] = useState("");
 
   async function handleTransferSubmit(data, actions) {
     // Simulate a delay
@@ -36,10 +41,10 @@ const SendTransaction = ({ from }) => {
       actions.setSubmitting(false);
       return;
     }
-    
+
     // check for enough balance
     const balance = await getBalance(from);
-    if(data.amount > balance) {
+    if (data.amount > balance) {
       actions.setErrors({ amount: "You don't have enough balance" });
       actions.setSubmitting(false);
       return;
@@ -47,23 +52,30 @@ const SendTransaction = ({ from }) => {
 
     // check for password
     const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
-    const { ok } = decrypt(encryptedKey, data.password);
+    const { ok, key } = decrypt(encryptedKey, data.password);
     if (!ok) {
       actions.setErrors({ password: "Invalid Password" });
       actions.setSubmitting(false);
       return;
     }
 
+    // get account from key i.e mnemonic
+    const { privateKey } = getAccountFromMnemonic(key);
+
     // send transaction
-    const res = await sendTransaction(from, data.to, data.amount);
-    if (res.ok) {
-      setIsTransfered(true);
+    const transactionResponse = await sendTransaction({
+      to: data.to,
+      from,
+      amount: data.amount,
+      privateKey,
+    });
+
+    if (transactionResponse.ok) {
+      setTransactionHash(transactionResponse.transactionHash);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
-      actions.setErrors({
-        amount: res.message,
-      });
+      throw new Error(res.message);
     }
   }
 
@@ -88,7 +100,7 @@ const SendTransaction = ({ from }) => {
 
   return (
     <>
-      {!isTransfered && (
+      {!transactionHash && (
         <>
           <Typography
             variant="body2"
@@ -154,22 +166,24 @@ const SendTransaction = ({ from }) => {
               </FormHelperText>
             </FormControl>
 
-            {isSubmitting ? <ButtonLoader>Transfering.....</ButtonLoader> : 
+            {isSubmitting ? (
+              <ButtonLoader>Transfering.....</ButtonLoader>
+            ) : (
               <Button
                 fullWidth
                 type="submit"
                 variant="contained"
                 disabled={isSubmitting}
-                sx={{height: '40px'}}
+                sx={{ height: "40px" }}
               >
                 Transfer
               </Button>
-            }
+            )}
           </Box>
         </>
       )}
 
-      {isTransfered && (
+      {transactionHash && (
         <>
           <Logo />
 
@@ -177,9 +191,23 @@ const SendTransaction = ({ from }) => {
             Transaction successful.
           </Typography>
 
-          <Typography sx={{ color: "green", fontSize: "2rem", mb: "2rem" }}>
+          <Typography sx={{ color: "green", fontSize: "3rem", mb: "2rem" }}>
             ✅
           </Typography>
+
+          <Tooltip title='Transaction Hash' placement="top">
+            <Typography
+              sx={{
+                mb: "2rem",
+                overflowWrap: 'break-word',
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                color: "#1565c0",
+              }}
+            >
+              {transactionHash}
+            </Typography>
+          </Tooltip>
 
           <Button
             sx={{ width: "80%", height: "34px", padding: "0" }}

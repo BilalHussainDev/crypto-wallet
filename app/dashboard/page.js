@@ -127,7 +127,7 @@ function DashboardComponent() {
                 <Typography textAlign='left'>
                   {tx.date}
                 </Typography>
-                <Typography sx={{color: '#1976d2', fontWeight: 'bold'}}>
+                <Typography sx={{color: '#1976d2'}}>
                   {web3.utils.fromWei(tx.value, "ether")} ETH
                 </Typography>
                 <Typography textAlign='right'>

@@ -3,27 +3,48 @@ import { getWeb3 } from "./web3";
 const web3 = getWeb3();
 
 export const isAddress = (address) => {
-    // Validate the to address
+  // Validate the receiver address
   if (!web3.utils.isAddress(address)) {
     return false;
   } else {
     return true;
   }
-}
+};
 
-export const sendTransaction = async (from, to, value) => {
-  const transactionParameters = {
-    to,
-    from,
-    value: web3.utils.toWei(value, "ether"),
-  };
-
+export const sendTransaction = async ({
+  to,
+  from,
+  amount,
+  privateKey,
+}) => {
   try {
-    const res = await web3.eth.sendTransaction(transactionParameters);
-    console.log(res);
+    // get block to calculate the transaction's maxFeePerGas
+    const block = await web3.eth.getBlock();
+
+    // create transaction
+    const transactionParameters = {
+      from,
+      to,
+      value: web3.utils.toWei(amount, "ether"),
+      maxFeePerGas: block.baseFeePerGas * 2n,
+      maxPriorityFeePerGas: 100000,
+    };
+
+    // sign the transaction
+    const signedTransaction = await web3.eth.accounts.signTransaction(
+      transactionParameters,
+      privateKey
+    );
+
+    // send signed transaction
+    const receipt = await web3.eth.sendSignedTransaction(
+      signedTransaction.rawTransaction
+    );
+
     return {
       ok: true,
       message: "Transaction Successful",
+      transactionHash: receipt.transactionHash,
     };
   } catch (err) {
     return {
@@ -54,12 +75,10 @@ export const getTransactionHistory = async (address) => {
           tx.to.toLowerCase() === address.toLowerCase()
         ) {
           tx.date = formattedDate;
-          transactions.push(tx);
+          transactions.unshift(tx);
         }
       });
     }
   }
-  console.log(transactions);
   return transactions;
 };
-
