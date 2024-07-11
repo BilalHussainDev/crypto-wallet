@@ -125,10 +125,10 @@ function DashboardComponent() {
                 key={index}
               >
                 <Typography textAlign='left'>
-                  {tx.date}
+                  {tx.transactionDate}
                 </Typography>
                 <Typography sx={{color: '#1976d2'}}>
-                  {web3.utils.fromWei(tx.value, "ether")} ETH
+                  {tx.value} ETH
                 </Typography>
                 <Typography textAlign='right'>
                   {address === tx.from ? "Sent" : "Recieved "}

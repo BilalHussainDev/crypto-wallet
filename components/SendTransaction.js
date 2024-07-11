@@ -16,7 +16,11 @@ import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
 import { getBalance } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import { isAddress, sendTransaction } from "@/utils/transaction";
+import {
+  isAddress,
+  sendTransaction,
+  storeTransactionHistory,
+} from "@/utils/transaction";
 
 // schema for reset password form or like that
 const formSchema = object({
@@ -71,7 +75,10 @@ const SendTransaction = ({ from }) => {
     });
 
     if (transactionResponse.ok) {
-      setTransactionHash(transactionResponse.transactionHash);
+      storeTransactionHistory(transactionResponse.transactionDetails);
+      setTransactionHash(
+        transactionResponse.transactionDetails.transactionHash
+      );
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
@@ -195,11 +202,11 @@ const SendTransaction = ({ from }) => {
             ✅
           </Typography>
 
-          <Tooltip title='Transaction Hash' placement="top">
+          <Tooltip title="Transaction Hash" placement="top">
             <Typography
               sx={{
                 mb: "2rem",
-                overflowWrap: 'break-word',
+                overflowWrap: "break-word",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 color: "#1565c0",

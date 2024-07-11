@@ -6,7 +6,7 @@ export const generateMnemonic = () => {
 };
 
 export const getAccountFromMnemonic = (mnemonic) => {
-  const seed = bip39.mnemonicToSeedSync(mnemonic);
+  const seed = bip39.mnemonicToSeedSync(mnemonic.trim());
   const hdWallet = hdkey.fromMasterSeed(seed);
   const key = hdWallet.derivePath(`m/44'/60'/0'/0/0`).getWallet();
   const address = `0x${key.getAddress().toString("hex")}`;

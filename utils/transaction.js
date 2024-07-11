@@ -11,12 +11,7 @@ export const isAddress = (address) => {
   }
 };
 
-export const sendTransaction = async ({
-  to,
-  from,
-  amount,
-  privateKey,
-}) => {
+export const sendTransaction = async ({ to, from, amount, privateKey }) => {
   try {
     // get block to calculate the transaction's maxFeePerGas
     const block = await web3.eth.getBlock();
@@ -41,10 +36,22 @@ export const sendTransaction = async ({
       signedTransaction.rawTransaction
     );
 
+    // create transactionDetails to return back
+    const date = new Date();
+    const options = { month: "short", day: "2-digit" };
+    const transactionDate = date.toLocaleDateString("en-US", options);
+    const transactionDetails = {
+      transactionHash: receipt.transactionHash,
+      from,
+      to,
+      value: amount,
+      transactionDate,
+    };
+
     return {
       ok: true,
       message: "Transaction Successful",
-      transactionHash: receipt.transactionHash,
+      transactionDetails,
     };
   } catch (err) {
     return {
@@ -54,31 +61,30 @@ export const sendTransaction = async ({
   }
 };
 
-export const getTransactionHistory = async (address) => {
-  const transactions = [];
-  const latestBlock = await web3.eth.getBlockNumber();
+export const storeTransactionHistory = (transactionDetails) => {
+  // get transactions from local storage
+  const transactions = JSON.parse(localStorage.getItem("transactions")) || {};
 
-  // loop through all blocks
-  for (let i = 0; i <= latestBlock; i++) {
-    const block = await web3.eth.getBlock(i, true);
-    const timestamp = Number(block.timestamp);
-    const date = new Date(timestamp * 1000); // Convert to milliseconds
+  const to = transactionDetails.to;
+  const from = transactionDetails.from;
+  
+  // update transactions history
+  transactions[from] = transactions[from]
+    ? [...transactions[from], transactionDetails]
+    : [transactionDetails];
 
-    // Format the date to "Jun 02"
-    const options = { month: "short", day: "2-digit" };
-    const formattedDate = date.toLocaleDateString("en-US", options);
+  transactions[to] = transactions[to]
+    ? [...transactions[to], transactionDetails]
+    : [transactionDetails];
 
-    if (block && block.transactions) {
-      block.transactions.forEach((tx) => {
-        if (
-          tx.from.toLowerCase() === address.toLowerCase() ||
-          tx.to.toLowerCase() === address.toLowerCase()
-        ) {
-          tx.date = formattedDate;
-          transactions.unshift(tx);
-        }
-      });
-    }
+  // store transaction again in local storage
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+};
+
+export const getTransactionHistory = (address) => {
+  const transactions = JSON.parse(localStorage.getItem("transactions"));
+  if (!transactions || !transactions[address]) {
+    return [];
   }
-  return transactions;
+  return transactions[address];
 };
