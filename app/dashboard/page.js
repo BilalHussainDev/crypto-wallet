@@ -6,26 +6,20 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Box, Button, Typography } from "@mui/material";
 
-import { getWeb3 } from "@/utils/web3";
-import { getBalance} from "@/utils/account";
-import { getTransactionHistory } from "@/utils/transaction";
-
-const web3 = getWeb3();
+import { getBalance } from "@/utils/account";
+import { DashboardTabs } from "@/components";
 
 function DashboardComponent() {
   const searchParams = useSearchParams();
   const address = searchParams.get("address");
 
-  const [balance, setBalance] = useState("");
-  const [transactions, setTransactions] = useState([]);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
       if (address) {
         const accountBalance = await getBalance(address);
-        setBalance(accountBalance);
-        const accountTransactions = await getTransactionHistory(address);
-        setTransactions(accountTransactions);
+        setBalance(+accountBalance);
       }
     };
     fetchAccountDetails();
@@ -61,7 +55,7 @@ function DashboardComponent() {
       </Box>
 
       <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-        {balance} ETH
+        {balance.toFixed(4)} MATIC
       </Typography>
 
       <Box
@@ -103,41 +97,7 @@ function DashboardComponent() {
         </Button>
       </Box>
 
-      <Box>
-        <Typography variant="h3" mb="1rem" fontSize="26px">
-          Activity
-        </Typography>
-        {transactions.length <= 0 ? (
-          <Typography mb="1rem" sx={{ color: "#8d9dab" }}>
-            No Transactions Yet
-          </Typography>
-        ) : (
-          <Box component="ul">
-            {transactions.map((tx, index) => (
-              <Box
-                sx={{
-                  borderBottom: "1px solid #1976d2",
-                  padding: "0.5rem",
-                  display: "grid",
-                  gridTemplateColumns: '1fr 1fr 1fr',
-                }}
-                component="li"
-                key={index}
-              >
-                <Typography textAlign='left'>
-                  {tx.transactionDate}
-                </Typography>
-                <Typography sx={{color: '#1976d2'}}>
-                  {tx.value} ETH
-                </Typography>
-                <Typography textAlign='right'>
-                  {address === tx.from ? "Sent" : "Recieved "}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        )}
-      </Box>
+      <DashboardTabs />
     </Box>
   );
 }
