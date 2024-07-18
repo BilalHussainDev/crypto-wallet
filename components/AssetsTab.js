@@ -1,8 +1,37 @@
-import { Box, Icon, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getTokenAddressList, getTokenBalance, getTokenDetails } from "@/utils/token";
 
 export default function AssetsTab({address}) {
+  const [tokenList, setTokenList] = useState([])
+
+  useEffect(() => {
+    const fetchTokens = async () => {
+      try {
+        const tokenAddressList = getTokenAddressList(address);
+        const tokens = await Promise.all(
+          tokenAddressList.map(async (tokenAddress) => {
+            const res = await getTokenDetails(tokenAddress);
+            if (!res.ok) {
+              throw new Error(res.message);
+            }
+            const tokenDetails = res.data;
+            const tokenAmount = await getTokenBalance(address, tokenAddress);
+            tokenDetails.balance = tokenAmount;
+            return tokenDetails;
+          })
+        );
+        setTokenList(tokens);
+      } catch (error) {
+        throw new Error("Error fetching token details:", error);
+      }
+    };
+
+    fetchTokens();
+  }, [address]);
+
   return (
     <>
       <Typography
@@ -11,75 +40,85 @@ export default function AssetsTab({address}) {
         color="primary"
         textAlign="right"
         mt="0.5rem"
-        mb="1.5rem"
+        mb="1rem"
       >
         <Link href={`/import-token?address=${address}`}>Import Tokens</Link>
       </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "#e5feff",
-          borderRadius: "10px",
-          cursor: "pointer",
-          mb: "8px",
-          p: "10px",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box
-            sx={{
-              width: "34px",
-              height: "33px",
-              marginRight: "12px",
-              borderRadius: "10px",
-              boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
-              backgroundColor: "rgb(255, 255, 255)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography fontWeight="bold" color="primary">
-              B
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography
-              compoents="h2"
-              sx={{
-                fontSize: "13px",
-                color: "rgb(9,9,9)",
-                letterSpacing: "1.25",
-                textAlign: "left",
-              }}
-            >
-              Bobbin
-            </Typography>
-            <Typography color="primary" sx={{ fontSize: "12px" }}>
-              0.2341 BOB
-            </Typography>
-          </Box>
+      {tokenList.map((tokenDetails, i) => (
+        <Box key={i + 1}>
+          <SingleToken tokenDetails={tokenDetails} />
         </Box>
+      ))}
+    </>
+  );
+}
 
+function SingleToken ({tokenDetails}) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#e5feff",
+        borderRadius: "10px",
+        cursor: "pointer",
+        mb: "8px",
+        p: "10px 12px 12px 12px",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center" }}>
         <Box
           sx={{
-            width: "29px",
-            height: "28px",
+            width: "34px",
+            height: "34px",
+            marginRight: "12px",
             borderRadius: "10px",
             boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
-            backgroundColor: "#ffffff",
+            backgroundColor: "rgb(255, 255, 255)",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <ArrowForwardIosIcon fontSize="x-small" sx={{ml: '2px'}} />
+          <Typography fontWeight="bold" color="primary">
+            {tokenDetails.symbol?.at(0)}
+          </Typography>
+        </Box>
+
+        <Box sx={{ maxWidth: "12rem", overflow: "hidden" }}>
+          <Typography
+            compoents="h2"
+            sx={{
+              fontSize: "13px",
+              color: "rgb(9,9,9)",
+              lineHeight: '1.25',
+              textAlign: "left",
+            }}
+          >
+            {tokenDetails.name}
+          </Typography>
+          <Typography color="primary" sx={{ fontSize: "12px" }}>
+            {tokenDetails.balance} {tokenDetails.symbol}
+          </Typography>
         </Box>
       </Box>
-    </>
+
+      <Box
+        sx={{
+          width: "29px",
+          height: "28px",
+          borderRadius: "10px",
+          boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
+          backgroundColor: "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ArrowForwardIosIcon fontSize="x-small" sx={{ ml: "2px" }} />
+      </Box>
+    </Box>
   );
 }

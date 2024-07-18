@@ -5,12 +5,14 @@ const web3 = getWeb3();
 export async function getTokenDetails(tokenAddress) {
   try {
     const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+    const name = await tokenContract.methods.name().call();
     const symbol = await tokenContract.methods.symbol().call();
     const decimals = await tokenContract.methods.decimals().call();
 
     return {
       ok: true,
       data: {
+        name,
         symbol,
         decimals,
       },
@@ -22,6 +24,12 @@ export async function getTokenDetails(tokenAddress) {
     }
   }
 }
+
+export const getTokenBalance = async (address, tokenAddress) => {
+  const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+  const balance = await tokenContract.methods.balanceOf(address).call();
+  return web3.utils.fromWei(balance, "ether");
+};
 
 export const storeToken = (address, tokenAddress) => {
   // get transactions from local storage
@@ -35,6 +43,15 @@ export const storeToken = (address, tokenAddress) => {
   // store transaction again in local storage
   localStorage.setItem("tokens", JSON.stringify(tokens));
 };
+
+export const getTokenAddressList = (address) => {
+  const tokens = JSON.parse(localStorage.getItem("tokens"));
+  if (tokens && tokens[address]) {
+    return tokens[address];
+  }
+  return [];
+};
+
 
 const tokenABI = [
   {
