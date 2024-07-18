@@ -54,8 +54,8 @@ function DashboardComponent() {
         />
       </Box>
 
-      <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-        {balance.toFixed(4)} MATIC
+      <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+        {balance.toFixed(4)} ETH
       </Typography>
 
       <Box
@@ -97,7 +97,7 @@ function DashboardComponent() {
         </Button>
       </Box>
 
-      <DashboardTabs />
+      <DashboardTabs address={address}/>
     </Box>
   );
 }

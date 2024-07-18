@@ -14,20 +14,25 @@ export const isAddress = (address) => {
 export const sendTransaction = async ({ to, from, amount, privateKey }) => {
   try {
     // get block to calculate the transaction's maxFeePerGas
-    const block = await web3.eth.getBlock();
+    // const block = await web3.eth.getBlock();
 
     // create transaction
-    const transactionParameters = {
+    const transactionParams = {
       from,
       to,
       value: web3.utils.toWei(amount, "ether"),
-      maxFeePerGas: block.baseFeePerGas * 2n,
-      maxPriorityFeePerGas: 100000,
+      // maxFeePerGas: block.baseFeePerGas * 2n,
+      // maxPriorityFeePerGas: 100000,
     };
+
+    transactionParams.gas = await web3.eth.estimateGas(
+      transactionParams
+    );
+    transactionParams.gasPrice = await web3.eth.getGasPrice();
 
     // sign the transaction
     const signedTransaction = await web3.eth.accounts.signTransaction(
-      transactionParameters,
+      transactionParams,
       privateKey
     );
 

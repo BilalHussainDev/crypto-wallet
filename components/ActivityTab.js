@@ -1,11 +1,8 @@
 import { getTransactionHistory } from "@/utils/transaction";
 import {Box, Typography } from "@mui/material";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ActivityTab(){
-  const searchParams = useSearchParams();
-  const address = searchParams.get("address");
+export default function ActivityTab({address}){
 
   const [transactions, setTransactions] = useState([]);
 

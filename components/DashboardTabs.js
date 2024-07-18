@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 import { useState } from "react";
 import ActivityTab from "./ActivityTab";
+import {Box, Tab, Tabs, Typography } from "@mui/material";
+import Link from "next/link";
+import AssetsTab from "./AssetsTab";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -16,7 +16,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ padding: '1rem 0' }}>{children}</Box>}
     </div>
   );
 }
@@ -34,7 +34,7 @@ function a11yProps(index) {
   };
 }
 
-export default function DashboardTabs() {
+export default function DashboardTabs({address}) {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -50,15 +50,17 @@ export default function DashboardTabs() {
           aria-label="basic tabs"
           centered
         >
-          <Tab sx={{width: '50%'}} label="Assets" {...a11yProps(0)} />
-          <Tab sx={{width: '50%'}} label="Activity" {...a11yProps(1)} />
+          <Tab sx={{ width: "50%" }} label="Assets" {...a11yProps(0)} />
+          <Tab sx={{ width: "50%" }} label="Activity" {...a11yProps(1)} />
         </Tabs>
       </Box>
+
       <CustomTabPanel value={value} index={0}>
-        Item One
+        <AssetsTab address={address} />
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={1}>
-        <ActivityTab />
+        <ActivityTab address={address}/>
       </CustomTabPanel>
     </Box>
   );

@@ -82,7 +82,7 @@ const SendTransaction = ({ from }) => {
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
-      throw new Error(res.message);
+      throw new Error(transactionResponse.message);
     }
   }
 
