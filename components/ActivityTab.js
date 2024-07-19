@@ -36,7 +36,7 @@ export default function ActivityTab({address}){
               key={index}
             >
               <Typography textAlign="left">{tx.transactionDate}</Typography>
-              <Typography sx={{ color: "#1976d2" }}>{tx.value} ETH</Typography>
+              <Typography sx={{ color: "#1976d2" }}>{tx.value} {tx.tokenSymbol || 'ETH'}</Typography>
               <Typography textAlign="right">
                 {address === tx.from ? "Sent" : "Recieved "}
               </Typography>
