@@ -27,7 +27,7 @@ const formSchema = object({
 	password: string().required("Password is required"),
 });
 
-const SendToken = ({ from, tokenAddress }) => {
+const SendToken = ({ from, tokenAddress, symbol, balance }) => {
 	const [transactionHash, setTransactionHash] = useState("");
 
 	async function handleTransferSubmit(data, actions) {
@@ -103,153 +103,135 @@ const SendToken = ({ from, tokenAddress }) => {
 	});
 
 	return (
-		<>
-			{!transactionHash && (
-				<>
-					<Typography
-						variant="body2"
-						type="button"
-						color="primary"
-						textAlign="center"
-						padding="0.5rem 0"
-						sx={{ fontSize: "2.5rem", textAlign: "left" }}
-					>
-						<Link
-							href={`/token-dashboard?address=${from}&tokenAddress=${tokenAddress}`}
-						>
-							⬅
-						</Link>
-					</Typography>
-					<Typography
-						component="h1"
-						variant="h5"
-						sx={{ mb: "2rem", fontWeight: "bold" }}
-					>
-						Transfer Tokens
-					</Typography>
-					<Box
-						component="form"
-						onSubmit={handleSubmit}
-						autoComplete="off"
-					>
-						<FormControl fullWidth sx={{ minHeight: "80px" }}>
-							<OutlinedInput
-								name="to"
-								placeholder="Enter receiver address"
-								value={values.to}
-								onChange={handleChange}
-								onBlur={handleBlur}
-								disabled={isSubmitting}
-								error={errors.to && touched.to ? true : false}
-							/>
-							<FormHelperText sx={{ color: "red" }}>
-								{errors.to && touched.to ? errors.to : ""}
-							</FormHelperText>
-						</FormControl>
+    <>
+      {!transactionHash && (
+        <>
+          <Typography
+            variant="body2"
+            type="button"
+            color="primary"
+            textAlign="center"
+            padding="0.5rem 0"
+            sx={{ fontSize: "2.5rem", textAlign: "left" }}
+          >
+            <Link
+              href={`/token-dashboard?address=${from}&tokenAddress=${tokenAddress}&symbol=${symbol}`}
+            >
+              ⬅
+            </Link>
+          </Typography>
+          <Typography
+            component="h1"
+            variant="h5"
+            sx={{ mb: "2rem", fontWeight: "bold" }}
+          >
+            Transfer Tokens
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} autoComplete="off">
+            <FormControl fullWidth sx={{ minHeight: "80px" }}>
+              <OutlinedInput
+                name="to"
+                placeholder="Enter receiver address"
+                value={values.to}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={isSubmitting}
+                error={errors.to && touched.to ? true : false}
+              />
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.to && touched.to ? errors.to : ""}
+              </FormHelperText>
+            </FormControl>
 
-						<FormControl fullWidth sx={{ minHeight: "80px" }}>
-							<OutlinedInput
-								name="amount"
-								placeholder="Enter amount"
-								type="number"
-								value={values.amount}
-								onChange={handleChange}
-								onBlur={handleBlur}
-								disabled={isSubmitting}
-								error={
-									errors.amount && touched.amount
-										? true
-										: false
-								}
-							/>
-							<FormHelperText sx={{ color: "red" }}>
-								{errors.amount && touched.amount
-									? errors.amount
-									: ""}
-							</FormHelperText>
-						</FormControl>
+            <FormControl fullWidth sx={{ minHeight: "80px" }}>
+              <OutlinedInput
+                name="amount"
+                placeholder="Enter amount"
+                type="number"
+                value={values.amount}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={isSubmitting}
+                error={errors.amount && touched.amount ? true : false}
+              />
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.amount && touched.amount ? errors.amount : ""}
+              </FormHelperText>
+            </FormControl>
 
-						<FormControl fullWidth sx={{ minHeight: "80px" }}>
-							<PasswordField
-								name="password"
-								placeholder="Enter your password"
-								value={values.password}
-								onChange={handleChange}
-								onBlur={handleBlur}
-								disabled={isSubmitting}
-								error={
-									errors.password && touched.password
-										? true
-										: false
-								}
-							/>
-							<FormHelperText sx={{ color: "red" }}>
-								{errors.password && touched.password
-									? errors.password
-									: ""}
-							</FormHelperText>
-						</FormControl>
+            <FormControl fullWidth sx={{ minHeight: "80px" }}>
+              <PasswordField
+                name="password"
+                placeholder="Enter your password"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={isSubmitting}
+                error={errors.password && touched.password ? true : false}
+              />
+              <FormHelperText sx={{ color: "red" }}>
+                {errors.password && touched.password ? errors.password : ""}
+              </FormHelperText>
+            </FormControl>
 
-						{isSubmitting ? (
-							<ButtonLoader>Transfering.....</ButtonLoader>
-						) : (
-							<Button
-								fullWidth
-								type="submit"
-								variant="contained"
-								disabled={isSubmitting}
-								sx={{ height: "40px" }}
-							>
-								Transfer
-							</Button>
-						)}
-					</Box>
-				</>
-			)}
+            {isSubmitting ? (
+              <ButtonLoader>Transfering.....</ButtonLoader>
+            ) : (
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting}
+                sx={{ height: "40px" }}
+              >
+                Transfer
+              </Button>
+            )}
+          </Box>
+        </>
+      )}
 
-			{transactionHash && (
-				<>
-					<Logo />
+      {transactionHash && (
+        <>
+          <Logo />
 
-					<Typography sx={{ color: "green", mb: "2rem" }}>
-						Transaction successful.
-					</Typography>
+          <Typography sx={{ color: "green", mb: "2rem" }}>
+            Transaction successful.
+          </Typography>
 
-					<Typography
-						sx={{ color: "green", fontSize: "3rem", mb: "2rem" }}
-					>
-						✅
-					</Typography>
+          <Typography sx={{ color: "green", fontSize: "3rem", mb: "2rem" }}>
+            ✅
+          </Typography>
 
-					<Tooltip title="Transaction Hash" placement="top">
-						<Typography
-							sx={{
-								mb: "2rem",
-								overflowWrap: "break-word",
-								overflow: "hidden",
-								textOverflow: "ellipsis",
-								color: "#1565c0",
-							}}
-						>
-							{transactionHash}
-						</Typography>
-					</Tooltip>
+          <Tooltip title="Transaction Hash" placement="top">
+            <Typography
+              sx={{
+                mb: "2rem",
+                overflowWrap: "break-word",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                color: "#1565c0",
+              }}
+            >
+              {transactionHash}
+            </Typography>
+          </Tooltip>
 
-					<Button
-						sx={{ width: "80%", height: "34px", padding: "0" }}
-						variant="contained"
-					>
-						<Link
-							href={`/token-dashboard?address=${from}&tokenAddress=${tokenAddress}`}
-							style={{ width: "100%" }}
-						>
-							Back to Dashboard
-						</Link>
-					</Button>
-				</>
-			)}
-		</>
-	);
+          <Button
+            sx={{ width: "80%", height: "34px", padding: "0" }}
+            variant="contained"
+          >
+            <Link
+              href={`/token-dashboard?address=${from}&tokenAddress=${tokenAddress}&symbol=${symbol}`}
+              style={{ width: "100%" }}
+            >
+              Back to Dashboard
+            </Link>
+          </Button>
+        </>
+      )}
+    </>
+  );
 };
 
 export default SendToken;

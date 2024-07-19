@@ -58,7 +58,7 @@ export default function AssetsTab({ address }) {
 			{tokenList.map((tokenDetails, i) => (
 				<Box key={i + 1}>
 					<Link
-						href={`/token-dashboard?address=${address}&tokenAddress=${tokenDetails.address}&symbol=${tokenDetails.symbol}&balance=${tokenDetails.balance}`}
+						href={`/token-dashboard?address=${address}&tokenAddress=${tokenDetails.address}&symbol=${tokenDetails.symbol}`}
 					>
 						<SingleToken tokenDetails={tokenDetails} />
 					</Link>
@@ -114,7 +114,7 @@ function SingleToken({ tokenDetails }) {
 						{tokenDetails.name}
 					</Typography>
 					<Typography color="primary" sx={{ fontSize: "12px" }}>
-						{tokenDetails.balance} {tokenDetails.symbol}
+						{(+tokenDetails.balance).toFixed(4)} {tokenDetails.symbol}
 					</Typography>
 				</Box>
 			</Box>

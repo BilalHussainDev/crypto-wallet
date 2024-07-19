@@ -1,108 +1,127 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Box, Button, Typography } from "@mui/material";
 
 import { ActivityTab } from "@/components";
+import { getTokenBalance } from "@/utils/token";
 
 function DashboardComponent() {
+	const [balance, setBalance] = useState(0);
 	const searchParams = useSearchParams();
 	const address = searchParams.get("address");
 	const tokenAddress = searchParams.get("tokenAddress");
-	const balance = +searchParams.get("balance");
 	const symbol = searchParams.get("symbol");
+
+	useEffect(() => {
+		(async() => {
+				const tokenBalance = await getTokenBalance(address, tokenAddress);
+				setBalance(+tokenBalance);
+		})()
+	}, [])
+
 
 	if (!address) {
 		return <p>No account selected.</p>;
 	}
 
 	return (
-		<Box component="section">
-			<Typography
-				sx={{
-					whiteSpace: "nowrap",
-					overflow: "hidden",
-					textOverflow: "ellipsis",
-					textAlign: "center",
-					fontSize: "14px",
-					pt: "16px",
-				}}
-			>
-				{address}
-			</Typography>
+    <Box component="section">
+      <Typography
+        variant="body2"
+        type="button"
+        color="primary"
+        textAlign="center"
+        padding="0"
+        sx={{ fontSize: "2.5rem", textAlign: "left" }}
+      >
+        <Link href={`/dashboard?address=${address}`}>⬅</Link>
+      </Typography>
 
-			<Box>
-				<Image
-					src="/img/bobbin.png"
-					alt="ETH"
-					width={100}
-					height={100}
-					priority
-				/>
-			</Box>
+      <Typography
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          textAlign: "center",
+          fontSize: "14px",
+        }}
+      >
+        {address}
+      </Typography>
 
-			<Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-				{balance.toFixed(4)} {symbol}
-			</Typography>
+      <Box>
+        <Image
+          src="/img/bobbin.png"
+          alt="ETH"
+          width={100}
+          height={100}
+          priority
+        />
+      </Box>
 
-			<Box
-				sx={{
-					margin: "1.5rem 0",
-					display: "flex",
-					justifyContent: "space-evenly",
-				}}
-			>
-				<Button
-					sx={{ width: "96px", padding: "0", height: "2rem" }}
-					variant="outlined"
-				>
-					<Link
-						href={`/send-tokens?address=${address}&tokenAddress=${tokenAddress}`}
-						style={{ width: "100%" }}
-					>
-						Send
-					</Link>
-				</Button>
-				<Button
-					sx={{ width: "96px", padding: "0", height: "2rem" }}
-					variant="outlined"
-				>
-					<Link
-						href={`/receive-funds?address=${address}`}
-						style={{ width: "100%" }}
-					>
-						Receive
-					</Link>
-				</Button>
-				<Button
-					sx={{ width: "96px", padding: "0", height: "2rem" }}
-					variant="outlined"
-				>
-					<Link href={`/unlock-wallet`} style={{ width: "100%" }}>
-						Logout
-					</Link>
-				</Button>
-			</Box>
+      <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+        {balance.toFixed(4)} {symbol}
+      </Typography>
 
-			<Typography
-				color="primary"
-				sx={{
-					mb: "1.5rem",
-					fontSize: "25px",
-					fontWeight: "500",
-					lineHeight: "0.78",
-					textAlign: "center",
-				}}
-			>
-				Activity
-			</Typography>
+      <Box
+        sx={{
+          margin: "1.5rem 0",
+          display: "flex",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <Button
+          sx={{ width: "96px", padding: "0", height: "2rem" }}
+          variant="outlined"
+        >
+          <Link
+            href={`/send-tokens?address=${address}&tokenAddress=${tokenAddress}&symbol=${symbol}&balance${balance}`}
+            style={{ width: "100%" }}
+          >
+            Send
+          </Link>
+        </Button>
+        <Button
+          sx={{ width: "96px", padding: "0", height: "2rem" }}
+          variant="outlined"
+        >
+          <Link
+            href={`/receive-funds?address=${address}`}
+            style={{ width: "100%" }}
+          >
+            Receive
+          </Link>
+        </Button>
+        <Button
+          sx={{ width: "96px", padding: "0", height: "2rem" }}
+          variant="outlined"
+        >
+          <Link href={`/unlock-wallet`} style={{ width: "100%" }}>
+            Logout
+          </Link>
+        </Button>
+      </Box>
 
-			<ActivityTab address={address} />
-		</Box>
-	);
+      <Typography
+        color="primary"
+        sx={{
+          mb: "1.5rem",
+          fontSize: "25px",
+          fontWeight: "500",
+          lineHeight: "0.78",
+          textAlign: "center",
+        }}
+      >
+        Activity
+      </Typography>
+
+      <ActivityTab address={address} />
+    </Box>
+  );
 }
 
 export default function TokenDashboardPage() {
