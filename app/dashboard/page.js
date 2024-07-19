@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 
 import { getBalance } from "@/utils/account";
 import { DashboardTabs } from "@/components";
@@ -25,11 +25,8 @@ function DashboardComponent() {
     fetchAccountDetails();
   }, [address]);
 
-  if (!address) {
-    return <p>No account selected.</p>;
-  }
-
   return (
+    <>
     <Box component="section">
       <Typography
         sx={{
@@ -64,33 +61,33 @@ function DashboardComponent() {
           display: "flex",
           justifyContent: "space-evenly",
         }}
-      >
+        >
         <Button
           sx={{ width: "96px", padding: "0", height: "2rem" }}
           variant="outlined"
-        >
+          >
           <Link
             href={`/send-funds?address=${address}`}
             style={{ width: "100%" }}
-          >
+            >
             Send
           </Link>
         </Button>
         <Button
           sx={{ width: "96px", padding: "0", height: "2rem" }}
           variant="outlined"
-        >
+          >
           <Link
             href={`/receive-funds?address=${address}`}
             style={{ width: "100%" }}
-          >
+            >
             Receive
           </Link>
         </Button>
         <Button
           sx={{ width: "96px", padding: "0", height: "2rem" }}
           variant="outlined"
-        >
+          >
           <Link href={`/unlock-wallet`} style={{ width: "100%" }}>
             Logout
           </Link>
@@ -99,6 +96,22 @@ function DashboardComponent() {
 
       <DashboardTabs address={address}/>
     </Box>
+
+    {!balance && <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'absolute',
+      top: '0',
+      zIndex: '100',
+      backdropFilter:'blur(5px)',
+      width: '100%',
+      height: '100%'
+      }}>
+        <CircularProgress />
+    </Box>
+  }
+</>
   );
 }
 

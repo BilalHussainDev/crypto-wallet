@@ -30,7 +30,10 @@ export default function AssetsTab({ address }) {
         );
         setTokenList(tokens);
       } catch (error) {
-        throw new Error("Error fetching token details:", error);
+        setTokenList([]);
+        throw new Error(
+          "Error fetching token details. Might be due to Network Issue. Check your internet and try again."
+        );
       }
     };
 
