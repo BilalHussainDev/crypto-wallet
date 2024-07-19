@@ -69,7 +69,7 @@ const UnlockAccount = () => {
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} autoComplete="off">
-        <FormControl fullWidth sx={{ height: "80px" }}>
+        <FormControl fullWidth sx={{ height: "80px", mb: "0.5rem" }}>
           <PasswordField
             name="password"
             placeholder="Enter your password"
@@ -84,10 +84,6 @@ const UnlockAccount = () => {
           </FormHelperText>
         </FormControl>
 
-        <Typography variant="body2" color="primary" textAlign="right" mb="2rem">
-          <Link href="/restore-wallet">Restore Account</Link>
-        </Typography>
-
         {isSubmitting ? (
           <ButtonLoader>Unlocking.....</ButtonLoader>
         ) : (
@@ -101,6 +97,16 @@ const UnlockAccount = () => {
             {isSubmitting ? "Unlocking....." : "Unlock"}
           </Button>
         )}
+
+        <Typography mt={1.5}>or</Typography>
+
+        <Typography
+          color="primary"
+          fontStyle='italic'
+          mt={1}
+        >
+          <Link href="/restore-wallet">import using recovery phrase</Link>
+        </Typography>
       </Box>
     </>
   );
