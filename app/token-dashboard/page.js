@@ -79,7 +79,7 @@ function DashboardComponent() {
           variant="outlined"
         >
           <Link
-            href={`/send-tokens?address=${address}&tokenAddress=${tokenAddress}&symbol=${symbol}&balance${balance}`}
+            href={`/send-tokens?address=${address}&tokenAddress=${tokenAddress}&symbol=${symbol}&balance=${balance}`}
             style={{ width: "100%" }}
           >
             Send

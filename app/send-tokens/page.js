@@ -10,6 +10,7 @@ function SendTokenComponent() {
   const tokenAddress = searchParams.get("tokenAddress");
   const symbol = searchParams.get("symbol");
   const balance = searchParams.get("balance");
+  console.log(balance)
 
   if (!address) {
     return <p>No account selected.</p>;

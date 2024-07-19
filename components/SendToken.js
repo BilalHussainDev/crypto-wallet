@@ -3,13 +3,13 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import {
-	Box,
-	Button,
-	FormControl,
-	FormHelperText,
-	OutlinedInput,
-	Tooltip,
-	Typography,
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  OutlinedInput,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
 import { ButtonLoader, PasswordField, Logo } from ".";
@@ -18,91 +18,88 @@ import { getTokenBalance, sendToken } from "@/utils/token";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { isAddress, storeTransactionHistory } from "@/utils/transaction";
 
-// schema for send transaction form or like that
-const formSchema = object({
-	to: string().required("Address is required"),
-	amount: number()
-		.positive("Enter valid amount")
-		.required("Amount is required"),
-	password: string().required("Password is required"),
-});
-
 const SendToken = ({ from, tokenAddress, symbol, balance }) => {
-	const [transactionHash, setTransactionHash] = useState("");
+  const [transactionHash, setTransactionHash] = useState("");
 
-	async function handleTransferSubmit(data, actions) {
-		// Simulate a delay
-		await new Promise((resolve) => setTimeout(resolve, 500));
+  // schema for send transaction form or like that
+  const formSchema = object({
+    to: string().required("Address is required"),
+    amount: number()
+      .positive("Enter valid amount")
+      .required("Amount is required")
+      .test(
+        "is-balance-enough",
+        "You don't have enough balance",
+        (amount) => amount < balance
+      ),
+    password: string().required("Password is required"),
+  });
 
-		// check validity of address
-		const isValidAddress = isAddress(data.to);
-		if (!isValidAddress) {
-			actions.setErrors({ to: "Address is invalid" });
-			actions.setSubmitting(false);
-			return;
-		}
+  async function handleTransferSubmit(data, actions) {
+    // Simulate a delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-		// check for enough balance
-		const balance = await getTokenBalance(from, tokenAddress);
-		if (data.amount > balance) {
-			actions.setErrors({ amount: "You don't have enough balance" });
-			actions.setSubmitting(false);
-			return;
-		}
+    // check validity of address
+    const isValidAddress = isAddress(data.to);
+    if (!isValidAddress) {
+      actions.setErrors({ to: "Address is invalid" });
+      actions.setSubmitting(false);
+      return;
+    }
 
-		// check for password
-		const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
-		const { ok, key } = decrypt(encryptedKey, data.password);
-		if (!ok) {
-			actions.setErrors({ password: "Invalid Password" });
-			actions.setSubmitting(false);
-			return;
-		}
+    // check for password
+    const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
+    const { ok, key } = decrypt(encryptedKey, data.password);
+    if (!ok) {
+      actions.setErrors({ password: "Invalid Password" });
+      actions.setSubmitting(false);
+      return;
+    }
 
-		// get account from key i.e mnemonic
-		const { privateKey } = getAccountFromMnemonic(key);
+    // get account from key i.e mnemonic
+    const { privateKey } = getAccountFromMnemonic(key);
 
-		// send transaction
-		const transactionResponse = await sendToken({
-			to: data.to,
-			from,
-			amount: data.amount,
-			privateKey,
-			tokenAddress,
-		});
+    // send transaction
+    const transactionResponse = await sendToken({
+      to: data.to,
+      from,
+      amount: data.amount,
+      privateKey,
+      tokenAddress,
+    });
 
-		if (transactionResponse.ok) {
-			storeTransactionHistory(transactionResponse.transactionDetails);
-			setTransactionHash(
-				transactionResponse.transactionDetails.transactionHash
-			);
-			actions.resetForm();
-		} else {
-			actions.setSubmitting(false);
-			throw new Error(transactionResponse.message);
-		}
-	}
+    if (transactionResponse.ok) {
+      storeTransactionHistory(transactionResponse.transactionDetails);
+      setTransactionHash(
+        transactionResponse.transactionDetails.transactionHash
+      );
+      actions.resetForm();
+    } else {
+      actions.setSubmitting(false);
+      throw new Error(transactionResponse.message);
+    }
+  }
 
-	// Extracting Form State and Helper Methods from formik
-	const {
-		values,
-		errors,
-		touched,
-		isSubmitting,
-		handleChange,
-		handleBlur,
-		handleSubmit,
-	} = useFormik({
-		initialValues: {
-			to: "",
-			amount: "",
-			password: "",
-		},
-		validationSchema: formSchema,
-		onSubmit: handleTransferSubmit,
-	});
+  // Extracting Form State and Helper Methods from formik
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      to: "",
+      amount: "",
+      password: "",
+    },
+    validationSchema: formSchema,
+    onSubmit: handleTransferSubmit,
+  });
 
-	return (
+  return (
     <>
       {!transactionHash && (
         <>
