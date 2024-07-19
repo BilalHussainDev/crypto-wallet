@@ -1,4 +1,5 @@
 import { getWeb3 } from "./web3";
+import { tokenABI } from '@/constants/abi';
 
 const web3 = getWeb3();
 
@@ -31,6 +32,63 @@ export const getTokenBalance = async (address, tokenAddress) => {
   return web3.utils.fromWei(balance, "ether");
 };
 
+// transfer tokens
+export async function sendToken({ from, to, amount, privateKey, tokenAddress }) {
+  try {
+    const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+    const decimals = await tokenContract.methods.decimals().call();
+    const adjustedAmount = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)));
+
+    // Create transaction
+    const transaction = tokenContract.methods.transfer(to, adjustedAmount.toString());
+
+    const gas = await transaction.estimateGas({ from });
+    const gasPrice = await web3.eth.getGasPrice();
+    const data = transaction.encodeABI();
+    const nonce = await web3.eth.getTransactionCount(from);
+
+    const tx = {
+      from,
+      to: tokenAddress,
+      gas,
+      gasPrice,
+      data,
+      nonce,
+    };
+
+    // Sign transaction
+    const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
+
+    // Send signed transaction
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+
+    // Create transaction details to return
+    const date = new Date();
+    const options = { month: "short", day: "2-digit" };
+    const transactionDate = date.toLocaleDateString("en-US", options);
+    const transactionDetails = {
+      transactionHash: receipt.transactionHash,
+      from,
+      to,
+      value: amount,
+      transactionDate,
+      tokenAddress,
+    };
+
+    return {
+      ok: true,
+      message: "Token transfer successful",
+      transactionDetails,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      message: err.message || "Token transfer failed",
+    };
+  }
+}
+
+// save token addresses in local storage
 export const storeToken = (address, tokenAddress) => {
   // get transactions from local storage
   const tokens = JSON.parse(localStorage.getItem("tokens")) || {};
@@ -44,6 +102,7 @@ export const storeToken = (address, tokenAddress) => {
   localStorage.setItem("tokens", JSON.stringify(tokens));
 };
 
+// retrieve token addresses from local storage
 export const getTokenAddressList = (address) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   if (tokens && tokens[address]) {
@@ -51,298 +110,3 @@ export const getTokenAddressList = (address) => {
   }
   return [];
 };
-
-
-const tokenABI = [
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "symbol",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "totalSupply",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
-    type: "constructor",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "value",
-        type: "uint256",
-      },
-    ],
-    name: "Approval",
-    type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "approve",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "subtractedValue",
-        type: "uint256",
-      },
-    ],
-    name: "decreaseAllowance",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "addedValue",
-        type: "uint256",
-      },
-    ],
-    name: "increaseAllowance",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "transfer",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "value",
-        type: "uint256",
-      },
-    ],
-    name: "Transfer",
-    type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "transferFrom",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-    ],
-    name: "allowance",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "balanceOf",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "decimals",
-    outputs: [
-      {
-        internalType: "uint8",
-        name: "",
-        type: "uint8",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "name",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "symbol",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-];

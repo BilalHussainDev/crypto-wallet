@@ -11,6 +11,7 @@ import { ActivityTab } from "@/components";
 function DashboardComponent() {
 	const searchParams = useSearchParams();
 	const address = searchParams.get("address");
+	const tokenAddress = searchParams.get("tokenAddress");
 	const balance = +searchParams.get("balance");
 	const symbol = searchParams.get("symbol");
 
@@ -59,7 +60,7 @@ function DashboardComponent() {
 					variant="outlined"
 				>
 					<Link
-						href={`/send-tokens?address=${address}`}
+						href={`/send-tokens?address=${address}&tokenAddress=${tokenAddress}`}
 						style={{ width: "100%" }}
 					>
 						Send

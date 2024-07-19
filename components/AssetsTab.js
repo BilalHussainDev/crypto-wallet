@@ -27,6 +27,7 @@ export default function AssetsTab({ address }) {
 							tokenAddress
 						);
 						tokenDetails.balance = tokenAmount;
+						tokenDetails.address = tokenAddress;
 						return tokenDetails;
 					})
 				);
@@ -57,7 +58,7 @@ export default function AssetsTab({ address }) {
 			{tokenList.map((tokenDetails, i) => (
 				<Box key={i + 1}>
 					<Link
-						href={`/token-dashboard?address=${address}&symbol=${tokenDetails.symbol}&balance=${tokenDetails.balance}`}
+						href={`/token-dashboard?address=${address}&tokenAddress=${tokenDetails.address}&symbol=${tokenDetails.symbol}&balance=${tokenDetails.balance}`}
 					>
 						<SingleToken tokenDetails={tokenDetails} />
 					</Link>

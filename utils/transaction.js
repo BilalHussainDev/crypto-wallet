@@ -13,9 +13,6 @@ export const isAddress = (address) => {
 
 export const sendTransaction = async ({ to, from, amount, privateKey }) => {
   try {
-    // get block to calculate the transaction's maxFeePerGas
-    // const block = await web3.eth.getBlock();
-
     // create transaction
     const transactionParams = {
       from,

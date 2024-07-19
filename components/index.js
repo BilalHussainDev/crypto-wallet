@@ -6,4 +6,5 @@ export { default as Header } from "./Header";
 export { default as ImportToken } from "./ImportToken";
 export { default as Logo } from "./Logo";
 export { default as PasswordField } from "./PasswordField";
+export { default as SendToken } from "./SendToken";
 export { default as SendTransaction } from "./SendTransaction";

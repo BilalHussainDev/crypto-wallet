@@ -22,7 +22,7 @@ import {
   storeTransactionHistory,
 } from "@/utils/transaction";
 
-// schema for reset password form or like that
+// schema for send transaction form or like that
 const formSchema = object({
   to: string().required("Address is required"),
   amount: number()
