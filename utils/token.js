@@ -37,8 +37,6 @@ export async function sendToken({ from, to, amount, privateKey, tokenAddress }) 
   try {
     const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
     const symbol = await tokenContract.methods.symbol().call();
-    const decimals = await tokenContract.methods.decimals().call();
-    // const adjustedAmount = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)));
 
     // Create transaction
     const transaction = tokenContract.methods.transfer(

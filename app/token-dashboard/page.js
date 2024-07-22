@@ -21,7 +21,7 @@ function DashboardComponent() {
 				const tokenBalance = await getTokenBalance(address, tokenAddress);
 				setBalance(+tokenBalance);
 		})()
-	}, [])
+	}, [address, tokenAddress])
 
 
 	if (!address) {
