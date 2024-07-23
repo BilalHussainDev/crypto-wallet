@@ -14,7 +14,7 @@ import {
 
 import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
-import { getTokenBalance, sendToken } from "@/utils/token";
+import { sendToken } from "@/utils/token";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { isAddress, storeTransactionHistory } from "@/utils/transaction";
 

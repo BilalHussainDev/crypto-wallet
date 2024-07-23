@@ -13,7 +13,7 @@ function DashboardComponent() {
   const searchParams = useSearchParams();
   const address = searchParams.get("address");
 
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState();
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
@@ -52,8 +52,8 @@ function DashboardComponent() {
         </Box>
 
         <Box sx={{display: 'flex', justifyContent: 'center', height: '28px' }}>
-        {!balance ? (
-          <div class="loader"></div>
+        {balance === undefined ? (
+          <div className="loader"></div>
         ) : (
           <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
             {balance.toFixed(4)} ETH

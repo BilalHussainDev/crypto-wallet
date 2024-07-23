@@ -34,7 +34,6 @@ const formSchema = object({
 
 const CreateAccount = () => {
   const [mnemonic, setMnemonic] = useState("");
-  const [isCreated, setIsCreated] = useState(false);
 
   const handlePasswordSubmit = (data, { resetForm }) => {
     setTimeout(() => {
@@ -75,7 +74,7 @@ const CreateAccount = () => {
     <>
       <Logo />
 
-      {!mnemonic && !isCreated && (
+      {!mnemonic && (
         <>
           <Typography sx={{ color: "#06213c", mb: "2rem" }}>
             Choose a password for your wallet
@@ -149,11 +148,11 @@ const CreateAccount = () => {
         </>
       )}
 
-      {mnemonic !== "" && !isCreated && (
+      {mnemonic !== "" && (
         <>
-          <Typography sx={{ color: "#06213c", mb: "2rem" }}>
-            Write down the secret phrase and store in a secure location. It will
-            help to backup and restore your wallet. Never Disclose it to anyone.
+          <Typography sx={{ color: "#b90e0e", mb: "2rem" }}>
+            Write down the secret phrase, it will help you to restore your
+            wallet. Never Disclose it to anyone.
           </Typography>
 
           <Typography
@@ -166,13 +165,14 @@ const CreateAccount = () => {
             {mnemonic}
           </Typography>
 
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => setIsCreated(true)}
-          >
-            Continue
-          </Button>
+          <Link href={`/create-wallet-success`}>
+            <Button
+              fullWidth
+              variant="contained"
+              >
+              Continue
+            </Button>
+          </Link>
 
           <Typography
             variant="body2"
@@ -182,27 +182,6 @@ const CreateAccount = () => {
           >
             <Link href="/">Cancel</Link>
           </Typography>
-        </>
-      )}
-
-      {mnemonic !== "" && isCreated && (
-        <>
-          <Typography sx={{ color: "green", mb: "2rem" }}>
-            Your Wallet has been created successfully.
-          </Typography>
-
-          <Typography sx={{ color: "green", fontSize: "2rem", mb: "2rem" }}>
-            ✅
-          </Typography>
-
-          <Button
-            sx={{ width: "80%", height: "34px", padding: "0" }}
-            variant="contained"
-          >
-            <Link href="/unlock-wallet" style={{ width: "100%" }}>
-              Continue
-            </Link>
-          </Button>
         </>
       )}
     </>
