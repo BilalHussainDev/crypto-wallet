@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -9,7 +9,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { getBalance } from "@/utils/account";
 import { DashboardTabs } from "@/components";
 
-function DashboardComponent() {
+export default function DashboardPage() {
   const searchParams = useSearchParams();
   const address = searchParams.get("address");
 
@@ -120,13 +120,5 @@ function DashboardComponent() {
         </Box>
       )}
     </>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <DashboardComponent />
-    </Suspense>
   );
 }

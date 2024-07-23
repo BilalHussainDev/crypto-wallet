@@ -1,14 +1,9 @@
-"use client";
-
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import QRCode from "qrcode.react";
-import { Box, Typography } from "@mui/material";
 import Link from "next/link";
+import QRCode from './qrcode';
+import { Box, Typography } from "@mui/material";
 
-function ReceiveFundsComponent() {
-  const searchParams = useSearchParams();
-  const address = searchParams.get("address");
+export default function ReceiveFundsPage({ searchParams }) {
+  const address = searchParams.address;
 
   if (!address) {
     return <p>No account selected.</p>;
@@ -48,13 +43,5 @@ function ReceiveFundsComponent() {
         {address}
       </Typography>
     </>
-  );
-}
-
-export default function ReceiveFundsPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ReceiveFundsComponent />
-    </Suspense>
   );
 }
