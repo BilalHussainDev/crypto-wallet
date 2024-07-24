@@ -94,7 +94,7 @@ export default function DashboardPage() {
             sx={{ width: "96px", padding: "0", height: "2rem" }}
             variant="outlined"
           >
-            <Link href={`/unlock-wallet`} style={{ width: "100%" }}>
+            <Link href={`/`} replace style={{ width: "100%" }}>
               Logout
             </Link>
           </Button>
