@@ -83,7 +83,7 @@ export const storeTransactionHistory = (transactionDetails) => {
   localStorage.setItem("transactions", JSON.stringify(transactions));
 };
 
-export const getTransactionHistory = (address) => {
+export const getTransactionHistory = (address, activityOf) => {
   const transactions = JSON.parse(localStorage.getItem("transactions"));
   if (!transactions || !transactions[address]) {
     return [];

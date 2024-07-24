@@ -2,14 +2,14 @@ import { getTransactionHistory } from "@/utils/transaction";
 import {Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function ActivityTab({address}){
+export default function ActivityTab({address, activityOf = 'ETH'}){
 
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
       if (address) {
-        const accountTransactions = await getTransactionHistory(address);
+        const accountTransactions = await getTransactionHistory(address, activityOf);
         setTransactions(accountTransactions);
       }
     };

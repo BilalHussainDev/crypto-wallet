@@ -104,7 +104,7 @@ export default function DashboardPage() {
       </Box>
 
       {/* Disable all interactions while loading */}
-      {!balance && (
+      {balance === undefined && (
         <Box
           sx={{
             display: "flex",

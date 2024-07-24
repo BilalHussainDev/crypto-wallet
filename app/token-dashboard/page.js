@@ -10,7 +10,7 @@ import { ActivityTab } from "@/components";
 import { getTokenBalance } from "@/utils/token";
 
 function DashboardComponent() {
-	const [balance, setBalance] = useState(0);
+	const [balance, setBalance] = useState();
 	const searchParams = useSearchParams();
 	const address = searchParams.get("address");
 	const tokenAddress = searchParams.get("tokenAddress");
@@ -65,8 +65,8 @@ function DashboardComponent() {
         </Box>
 
         <Box sx={{ display: "flex", justifyContent: "center", height: "28px" }}>
-          {!balance ? (
-            <div class="loader"></div>
+          {balance === undefined ? (
+            <div className="loader"></div>
           ) : (
             <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
               {balance.toFixed(4)} {symbol}
@@ -126,11 +126,11 @@ function DashboardComponent() {
           Activity
         </Typography>
 
-        <ActivityTab address={address} />
+        <ActivityTab address={address} activityOf={symbol} />
       </Box>
 
       {/* Disable all interactions while loading */}
-      {!balance && (
+      {balance === undefined && (
         <Box
           sx={{
             display: "flex",
