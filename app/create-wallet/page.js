@@ -14,6 +14,7 @@ import { object, string, ref } from "yup";
 import { ButtonLoader, Logo, PasswordField } from "@/components";
 import { generateMnemonic } from "@/utils/mnemonic";
 import { encrypt } from "@/utils/encrypt";
+import { useRouter } from "next/navigation";
 
 // 1 uppercase, 1 lowercase, 1 numeric and 1 special character
 const passwordRules = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).*$";
@@ -34,23 +35,36 @@ const formSchema = object({
 
 const CreateAccount = () => {
   const [mnemonic, setMnemonic] = useState("");
+  const [password, setPassword] = useState('');
+  const [isCreating, setIsCreating] = useState('');
 
-  const handlePasswordSubmit = (data, { resetForm }) => {
-    setTimeout(() => {
-      // generate mnemonic
-      const generatedMnemonic = generateMnemonic();
-      // remember mnemonic
-      setMnemonic(generatedMnemonic);
-      // encrypt mnemonic
-      const encrypted = encrypt(generatedMnemonic, data.password);
-      if (encrypted.ok) {
-        // store encrypted mnemonic
-        localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
-        // clear the form
-        resetForm();
-      }
-    }, 0);
+  const router = useRouter();
+
+  const handlePasswordSubmit = async (data) => {
+    // Simulate a delay
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    // generate mnemonic
+    const generatedMnemonic = generateMnemonic();
+    // set mnemonic state
+    setMnemonic(generatedMnemonic);
+    // set password state
+    setPassword(data.password);
   };
+
+  const handleCreateAccount = async () => {
+    setIsCreating(true);
+    // Simulate a delay
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    // encrypt mnemonic
+    const encrypted = encrypt(mnemonic, password);
+    if (encrypted.ok) {
+      // store encrypted mnemonic
+      localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
+      // navigate to CreateAccountSuccess Page
+      router.replace('/create-wallet-success');
+    }
+    setIsCreating(false);
+  }
 
   // Extracting Form State and Helper Methods from formik
   const {
@@ -165,14 +179,18 @@ const CreateAccount = () => {
             {mnemonic}
           </Typography>
 
-          <Link href={`/create-wallet-success`}>
+          {isCreating ? (
+            <ButtonLoader>Creating Account.....</ButtonLoader>
+          ) : (
             <Button
               fullWidth
               variant="contained"
-              >
+              onClick={handleCreateAccount}
+              sx={{ height: "40px" }}
+            >
               Continue
             </Button>
-          </Link>
+          )}
 
           <Typography
             variant="body2"
