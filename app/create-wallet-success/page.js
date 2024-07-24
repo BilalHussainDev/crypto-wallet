@@ -16,7 +16,7 @@ export default function CreateWalletSuccessPage() {
         ✅
       </Typography>
 
-      <Link href="/unlock-wallet">
+      <Link href="/unlock-wallet" replace>
         <Button variant="contained" sx={{ width: "80%" }}>
           Continue
         </Button>
