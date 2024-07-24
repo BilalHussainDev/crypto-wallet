@@ -51,14 +51,14 @@ export default function DashboardPage() {
           />
         </Box>
 
-        <Box sx={{display: 'flex', justifyContent: 'center', height: '28px' }}>
-        {balance === undefined ? (
-          <div className="loader"></div>
-        ) : (
-          <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-            {balance.toFixed(4)} ETH
-          </Typography>
-        )}
+        <Box sx={{ display: "flex", justifyContent: "center", height: "28px" }}>
+          {balance === undefined ? (
+            <div className="loader"></div>
+          ) : (
+            <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+              {balance.toFixed(4)} ETH
+            </Typography>
+          )}
         </Box>
 
         <Box
@@ -73,7 +73,7 @@ export default function DashboardPage() {
             variant="outlined"
           >
             <Link
-              href={`/send-funds?address=${address}`}
+              href={`/send-funds?address=${address}&balance=${balance}`}
               style={{ width: "100%" }}
             >
               Send
@@ -116,8 +116,7 @@ export default function DashboardPage() {
             width: "100%",
             height: "100%",
           }}
-        >
-        </Box>
+        ></Box>
       )}
     </>
   );

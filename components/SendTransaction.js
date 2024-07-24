@@ -14,7 +14,6 @@ import {
 
 import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
-import { getBalance } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import {
   isAddress,
@@ -22,17 +21,22 @@ import {
   storeTransactionHistory,
 } from "@/utils/transaction";
 
-// schema for send transaction form or like that
-const formSchema = object({
-  to: string().required("Address is required"),
-  amount: number()
-    .positive("Enter valid amount")
-    .required("Amount is required"),
-  password: string().required("Password is required"),
-});
-
-const SendTransaction = ({ from }) => {
+const SendTransaction = ({ from, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
+
+  // schema for send transaction form or like that
+  const formSchema = object({
+    to: string().required("Address is required"),
+    amount: number()
+      .positive("Enter valid amount")
+      .required("Amount is required")
+      .test(
+          "is-balance-enough",
+          "You don't have enough balance",
+          (amount) => amount < balance
+        ),
+    password: string().required("Password is required"),
+  });
 
   async function handleTransferSubmit(data, actions) {
     // Simulate a delay
@@ -42,14 +46,6 @@ const SendTransaction = ({ from }) => {
     const isValidAddress = isAddress(data.to);
     if (!isValidAddress) {
       actions.setErrors({ to: "Address is invalid" });
-      actions.setSubmitting(false);
-      return;
-    }
-
-    // check for enough balance
-    const balance = await getBalance(from);
-    if (data.amount > balance) {
-      actions.setErrors({ amount: "You don't have enough balance" });
       actions.setSubmitting(false);
       return;
     }

@@ -7,12 +7,13 @@ import { SendTransaction } from "@/components";
 function SendFundsComponent() {
   const searchParams = useSearchParams();
   const address = searchParams.get("address");
+  const balance = searchParams.get("balance");
 
   if (!address) {
     return <p>No account selected.</p>;
   }
 
-  return <SendTransaction from={address} />;
+  return <SendTransaction from={address} balance={balance} />;
 }
 
 export default function SendFundsPage() {
