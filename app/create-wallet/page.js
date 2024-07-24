@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Box,
   Button,
   FormControl,
   FormHelperText,
+  Tooltip,
   Typography,
 } from "@mui/material";
+import copy from "clipboard-copy";
 import { useFormik } from "formik";
 import { object, string, ref } from "yup";
 import { ButtonLoader, Logo, PasswordField } from "@/components";
@@ -35,8 +37,9 @@ const formSchema = object({
 
 const CreateAccount = () => {
   const [mnemonic, setMnemonic] = useState("");
-  const [password, setPassword] = useState('');
-  const [isCreating, setIsCreating] = useState('');
+  const [password, setPassword] = useState("");
+  const [isCreating, setIsCreating] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
 
   const router = useRouter();
 
@@ -61,10 +64,19 @@ const CreateAccount = () => {
       // store encrypted mnemonic
       localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
       // navigate to CreateAccountSuccess Page
-      router.replace('/create-wallet-success');
+      router.replace("/create-wallet-success");
     }
     setIsCreating(false);
-  }
+  };
+
+  const handleCopyClick = async () => {
+    try {
+      await copy(mnemonic);
+      setIsCopied(true);
+    } catch (error) {
+      console.error("Failed to copy text to clipboard", error);
+    }
+  };
 
   // Extracting Form State and Helper Methods from formik
   const {
@@ -164,23 +176,30 @@ const CreateAccount = () => {
 
       {mnemonic !== "" && (
         <>
-          <Typography sx={{ color: "#b90e0e", mb: "2rem" }}>
-            Write down the secret phrase, it will help you to restore your
+          <Typography sx={{ color: "#b90e0e", mb: "2.5rem" }}>
+            Write down the secret phrase, it will help you to restore or backup your
             wallet. Never Disclose it to anyone.
           </Typography>
 
-          <Typography
-            sx={{
-              fontWeight: "bold",
-              color: "#0e64b9",
-              mb: "2rem",
-            }}
+          <Tooltip
+            title={isCopied ? "Copied ✔" : "Click to Copy"}
+            placement="top" arrow
           >
-            {mnemonic}
-          </Typography>
+            <Typography
+              sx={{
+                fontWeight: "bold",
+                color: "#0e64b9",
+                mb: "2rem",
+                cursor: "pointer",
+              }}
+              onClick={handleCopyClick}
+            >
+              {mnemonic}
+            </Typography>
+          </Tooltip>
 
           {isCreating ? (
-            <ButtonLoader>Creating Account.....</ButtonLoader>
+            <ButtonLoader>Creating Wallet.....</ButtonLoader>
           ) : (
             <Button
               fullWidth

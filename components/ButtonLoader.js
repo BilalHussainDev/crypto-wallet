@@ -11,9 +11,9 @@ export default function ButtonLoader({ children }) {
         alignItems: "center",
         justifyContent: "center",
         color: "#ffffff",
-        cursor: "default",
+        cursor: "wait",
         textTransform: 'uppercase',
-        fontSize: '0.875rem'
+        fontSize: '0.875rem',
       }}
     >
       <Typography>{children}</Typography>
