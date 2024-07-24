@@ -75,7 +75,7 @@ const SendTransaction = ({ from }) => {
     });
 
     if (transactionResponse.ok) {
-      storeTransactionHistory(transactionResponse.transactionDetails);
+      storeTransactionHistory(transactionResponse.transactionDetails, "ETH");
       setTransactionHash(
         transactionResponse.transactionDetails.transactionHash
       );

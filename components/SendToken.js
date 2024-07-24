@@ -69,7 +69,7 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
     });
 
     if (transactionResponse.ok) {
-      storeTransactionHistory(transactionResponse.transactionDetails);
+      storeTransactionHistory(transactionResponse.transactionDetails, symbol);
       setTransactionHash(
         transactionResponse.transactionDetails.transactionHash
       );

@@ -63,9 +63,10 @@ export const sendTransaction = async ({ to, from, amount, privateKey }) => {
   }
 };
 
-export const storeTransactionHistory = (transactionDetails) => {
+export const storeTransactionHistory = (transactionDetails, activityOf) => {
+  console.log(activityOf)
   // get transactions from local storage
-  const transactions = JSON.parse(localStorage.getItem("transactions")) || {};
+  const transactions = JSON.parse(localStorage.getItem(activityOf)) || {};
 
   const to = transactionDetails.to;
   const from = transactionDetails.from;
@@ -80,11 +81,11 @@ export const storeTransactionHistory = (transactionDetails) => {
     : [transactionDetails];
 
   // store transaction again in local storage
-  localStorage.setItem("transactions", JSON.stringify(transactions));
+  localStorage.setItem(activityOf, JSON.stringify(transactions));
 };
 
 export const getTransactionHistory = (address, activityOf) => {
-  const transactions = JSON.parse(localStorage.getItem("transactions"));
+  const transactions = JSON.parse(localStorage.getItem(activityOf));
   if (!transactions || !transactions[address]) {
     return [];
   }
