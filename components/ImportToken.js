@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
@@ -12,7 +11,7 @@ import {
 	Typography,
 } from "@mui/material";
 
-import { ButtonLoader } from ".";
+import { BackButton, ButtonLoader } from ".";
 import { getTokenDetails, storeToken } from "@/utils/token";
 
 const addressRules = /^0x[a-fA-F0-9]{40}$/;
@@ -54,7 +53,7 @@ const ImportToken = ({ address }) => {
 		storeToken(address, data.address);
 
 		// redirect to dashboard with account address
-		router.push(`/dashboard?address=${address}`);
+		router.replace(`/dashboard?address=${address}`);
 		actions.resetForm();
 	}
 
@@ -77,16 +76,9 @@ const ImportToken = ({ address }) => {
 
 	return (
 		<>
-			<Typography
-				variant="body2"
-				type="button"
-				color="primary"
-				textAlign="center"
-				padding="0.5rem 0"
-				sx={{ fontSize: "2.5rem", textAlign: "left" }}
-			>
-				<Link href={`/dashboard?address=${address}`}>⬅</Link>
-			</Typography>
+			<Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+        <BackButton />
+      </Box>
 
 			<Typography
 				component="h1"

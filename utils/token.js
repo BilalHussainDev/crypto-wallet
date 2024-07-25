@@ -95,13 +95,17 @@ export const storeToken = (address, tokenAddress) => {
   // get transactions from local storage
   const tokens = JSON.parse(localStorage.getItem("tokens")) || {};
 
-  // update transactions history
-  tokens[address] = tokens[address]
+  // check for already imported token
+  if (!tokens[address] || !tokens[address].includes(tokenAddress)) {
+    
+    // update transactions history
+    tokens[address] = tokens[address]
     ? [...tokens[address], tokenAddress]
     : [tokenAddress];
-
-  // store transaction again in local storage
-  localStorage.setItem("tokens", JSON.stringify(tokens));
+    
+    // store transaction again in local storage
+    localStorage.setItem("tokens", JSON.stringify(tokens));
+  }
 };
 
 // retrieve token addresses from local storage
