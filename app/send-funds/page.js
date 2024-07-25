@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Box, Typography } from "@mui/material";
 import { SendTransaction } from "@/components";
 
 function SendFundsComponent() {
@@ -18,7 +19,13 @@ function SendFundsComponent() {
 
 export default function SendFundsPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <Box>
+          <Typography>Loading.....</Typography>
+        </Box>
+      }
+    >
       <SendFundsComponent />
     </Suspense>
   );

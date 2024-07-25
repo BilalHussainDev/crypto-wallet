@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Box, Typography } from "@mui/material";
 import { ImportToken } from "@/components";
 
 function ImportTokenComponent() {
@@ -17,7 +18,13 @@ function ImportTokenComponent() {
 
 export default function ImportTokenPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <Box>
+          <Typography>Loading.....</Typography>
+        </Box>
+      }
+    >
       <ImportTokenComponent />
     </Suspense>
   );

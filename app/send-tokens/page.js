@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Box, Typography } from "@mui/material";
 import { SendToken } from "@/components";
 
 function SendTokenComponent() {
@@ -20,7 +21,13 @@ function SendTokenComponent() {
 
 export default function SendTokensPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <Box>
+          <Typography>Loading.....</Typography>
+        </Box>
+      }
+    >
       <SendTokenComponent />
     </Suspense>
   );

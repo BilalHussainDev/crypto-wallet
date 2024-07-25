@@ -9,12 +9,15 @@ export default function ActivityTab({address, activityOf = 'ETH'}){
   useEffect(() => {
     const fetchAccountDetails = async () => {
       if (address) {
-        const accountTransactions = await getTransactionHistory(address, activityOf);
+        const accountTransactions = await getTransactionHistory(
+          address,
+          activityOf
+        );
         setTransactions(accountTransactions);
       }
     };
     fetchAccountDetails();
-  }, [address]);
+  }, [address, activityOf]);
 
   return (
     <Box>
