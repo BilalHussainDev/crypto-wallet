@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
@@ -24,6 +24,8 @@ import BackButton from "./BackButton";
 
 const SendTransaction = ({ from, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
+
+  const router = useRouter();
 
   // schema for send transaction form or like that
   const formSchema = object({
@@ -208,12 +210,11 @@ const SendTransaction = ({ from, balance }) => {
           </Tooltip>
 
           <Button
-            sx={{ width: "80%", height: "34px", padding: "0" }}
+            sx={{ width: "80%" }}
             variant="contained"
+            onClick={() => router.back()}
           >
-            <Link href={`/dashboard?address=${from}`} style={{ width: "100%" }}>
-              Back to Dashboard
-            </Link>
+            Back to Dashboard
           </Button>
         </>
       )}
