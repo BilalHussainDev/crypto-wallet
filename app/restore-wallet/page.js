@@ -46,7 +46,7 @@ const RestoreWallet = () => {
         localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
       }
       const res = getAccountFromMnemonic(data.mnemonic);
-      router.push(`/dashboard?address=${res.address}`);
+      router.replace(`/dashboard?address=${res.address}`);
       resetForm();
     }, 0);
   };
@@ -152,7 +152,7 @@ const RestoreWallet = () => {
         {isSubmitting ? (
           <span style={{ color: "#86a4c2" }}>Cancel</span>
         ) : (
-          <Link href="/">Cancel</Link>
+          <Link href="/" replace>Cancel</Link>
         )}
       </Typography>
     </>
