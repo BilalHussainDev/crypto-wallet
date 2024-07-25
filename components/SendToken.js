@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ButtonLoader, PasswordField, Logo } from ".";
+import { BackButton, ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
 import { sendToken } from "@/utils/token";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
@@ -20,6 +20,8 @@ import { isAddress, storeTransactionHistory } from "@/utils/transaction";
 
 const SendToken = ({ from, tokenAddress, symbol, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
+
+  const router = useRouter();
 
   // schema for send transaction form or like that
   const formSchema = object({
@@ -103,20 +105,10 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
     <>
       {!transactionHash && (
         <>
-          <Typography
-            variant="body2"
-            type="button"
-            color="primary"
-            textAlign="center"
-            padding="0.5rem 0"
-            sx={{ fontSize: "2.5rem", textAlign: "left" }}
-          >
-            <Link
-              href={`/token-dashboard?address=${from}&tokenAddress=${tokenAddress}&symbol=${symbol}`}
-            >
-              ⬅
-            </Link>
-          </Typography>
+          <Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+            <BackButton />
+          </Box>
+
           <Typography
             component="h1"
             variant="h5"
@@ -193,7 +185,7 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
           <Logo />
 
           <Typography sx={{ color: "green", mb: "2rem" }}>
-            Transaction successful.
+            Transaction Successful
           </Typography>
 
           <Typography sx={{ color: "green", fontSize: "3rem", mb: "2rem" }}>
@@ -215,15 +207,11 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
           </Tooltip>
 
           <Button
-            sx={{ width: "80%", height: "34px", padding: "0" }}
+            sx={{ width: "80%" }}
             variant="contained"
+            onClick={() => router.back()}
           >
-            <Link
-              href={`/token-dashboard?address=${from}&tokenAddress=${tokenAddress}&symbol=${symbol}`}
-              style={{ width: "100%" }}
-            >
-              Back to Dashboard
-            </Link>
+            Back to Dashboard
           </Button>
         </>
       )}
