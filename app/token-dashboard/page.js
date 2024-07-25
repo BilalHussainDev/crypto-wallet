@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Box, Button, Typography } from "@mui/material";
 
-import { ActivityTab } from "@/components";
+import { ActivityTab, BackButton } from "@/components";
 import { getTokenBalance } from "@/utils/token";
 
 function DashboardComponent() {
@@ -31,16 +31,9 @@ function DashboardComponent() {
 	return (
     <>
       <Box component="section">
-        <Typography
-          variant="body2"
-          type="button"
-          color="primary"
-          textAlign="center"
-          padding="0"
-          sx={{ fontSize: "2.5rem", textAlign: "left" }}
-        >
-          <Link href={`/dashboard?address=${address}`}>⬅</Link>
-        </Typography>
+        <Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+          <BackButton />
+        </Box>
 
         <Typography
           sx={{
@@ -76,13 +69,13 @@ function DashboardComponent() {
 
         <Box
           sx={{
-            margin: "1.5rem 0",
+            margin: "1.5rem 0 2rem 0",
             display: "flex",
             justifyContent: "space-evenly",
           }}
         >
           <Button
-            sx={{ width: "96px", padding: "0", height: "2rem" }}
+            sx={{ width: "120px", padding: "0", height: "2rem" }}
             variant="outlined"
           >
             <Link
@@ -93,7 +86,7 @@ function DashboardComponent() {
             </Link>
           </Button>
           <Button
-            sx={{ width: "96px", padding: "0", height: "2rem" }}
+            sx={{ width: "120px", padding: "0", height: "2rem" }}
             variant="outlined"
           >
             <Link
@@ -103,20 +96,12 @@ function DashboardComponent() {
               Receive
             </Link>
           </Button>
-          <Button
-            sx={{ width: "96px", padding: "0", height: "2rem" }}
-            variant="outlined"
-          >
-            <Link href={`/unlock-wallet`} style={{ width: "100%" }}>
-              Logout
-            </Link>
-          </Button>
         </Box>
 
         <Typography
           color="primary"
           sx={{
-            mb: "1.5rem",
+            mb: "1rem",
             fontSize: "25px",
             fontWeight: "500",
             lineHeight: "0.78",
