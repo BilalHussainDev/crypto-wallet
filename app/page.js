@@ -16,7 +16,7 @@ const Home = () => {
       if (value === null) {
         setIsNewUser(true);
       } else {
-        router.push("/unlock-wallet");
+        router.replace("/unlock-wallet");
       }
     }
   }, [router]);

@@ -20,6 +20,7 @@ import {
   sendTransaction,
   storeTransactionHistory,
 } from "@/utils/transaction";
+import BackButton from "./BackButton";
 
 const SendTransaction = ({ from, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
@@ -105,16 +106,10 @@ const SendTransaction = ({ from, balance }) => {
     <>
       {!transactionHash && (
         <>
-          <Typography
-            variant="body2"
-            type="button"
-            color="primary"
-            textAlign="center"
-            padding="0.5rem 0"
-            sx={{ fontSize: "2.5rem", textAlign: "left" }}
-          >
-            <Link href={`/dashboard?address=${from}`}>⬅</Link>
-          </Typography>
+          <Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+            <BackButton />
+          </Box>
+
           <Typography
             component="h1"
             variant="h5"

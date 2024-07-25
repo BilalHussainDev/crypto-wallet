@@ -37,7 +37,7 @@ const UnlockAccount = () => {
         return;
       } else {
         const res = getAccountFromMnemonic(decrypted.key);
-        router.push(`/dashboard?address=${res.address}`);
+        router.replace(`/dashboard?address=${res.address}`);
         resetForm();
       }
     }, 0);

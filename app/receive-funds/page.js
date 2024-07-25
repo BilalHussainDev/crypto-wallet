@@ -1,6 +1,6 @@
-import Link from "next/link";
-import QRCode from './qrcode';
+import QRCode from "./qrcode";
 import { Box, Typography } from "@mui/material";
+import BackButton from "@/components/BackButton";
 
 export default function ReceiveFundsPage({ searchParams }) {
   const address = searchParams.address;
@@ -11,16 +11,9 @@ export default function ReceiveFundsPage({ searchParams }) {
 
   return (
     <>
-      <Typography
-        variant="body2"
-        type="button"
-        color="primary"
-        textAlign="center"
-        padding="0.5rem 0"
-        sx={{ fontSize: "2.5rem", textAlign: "left" }}
-      >
-        <Link href={`/dashboard?address=${address}`}>⬅</Link>
-      </Typography>
+      <Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+        <BackButton />
+      </Box>
 
       <Typography
         component="h1"

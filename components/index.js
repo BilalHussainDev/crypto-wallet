@@ -1,4 +1,5 @@
 export { default as ActivityTab } from "./ActivityTab";
+export { default as BackButton } from "./BackButton";
 export { default as AssetsTab } from "./AssetsTab";
 export { default as ButtonLoader } from "./ButtonLoader";
 export { default as DashboardTabs } from "./DashboardTabs";
