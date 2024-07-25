@@ -1,8 +1,7 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
+import {Box, Tab, Tabs } from "@mui/material";
+import PropTypes from "prop-types";
 import ActivityTab from "./ActivityTab";
-import {Box, Tab, Tabs, Typography } from "@mui/material";
-import Link from "next/link";
 import AssetsTab from "./AssetsTab";
 
 function CustomTabPanel(props) {
