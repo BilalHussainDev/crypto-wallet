@@ -1,8 +1,9 @@
 import { useState } from "react";
-import {Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import PropTypes from "prop-types";
 import ActivityTab from "./ActivityTab";
 import AssetsTab from "./AssetsTab";
+import NFTsTab from "./NFTsTab";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -15,7 +16,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ padding: '1rem 0' }}>{children}</Box>}
+      {value === index && <Box sx={{ padding: "1rem 0" }}>{children}</Box>}
     </div>
   );
 }
@@ -33,8 +34,10 @@ function a11yProps(index) {
   };
 }
 
-export default function DashboardTabs({address}) {
-  const [value, setValue] = useState(0);
+export default function DashboardTabs({ address }) {
+  const [value, setValue] = useState(2);
+
+  const tabStyles = { width: "33%", textTransform: "none", fontSize: "1rem" };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -48,9 +51,11 @@ export default function DashboardTabs({address}) {
           onChange={handleChange}
           aria-label="basic tabs"
           centered
+          sx={{}}
         >
-          <Tab sx={{ width: "50%" }} label="Assets" {...a11yProps(0)} />
-          <Tab sx={{ width: "50%" }} label="Activity" {...a11yProps(1)} />
+          <Tab sx={tabStyles} label="Assets" {...a11yProps(0)} />
+          <Tab sx={tabStyles} label="Activity" {...a11yProps(1)} />
+          <Tab sx={tabStyles} label="NFTs" {...a11yProps(2)} />
         </Tabs>
       </Box>
 
@@ -59,7 +64,11 @@ export default function DashboardTabs({address}) {
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-        <ActivityTab address={address}/>
+        <ActivityTab address={address} />
+      </CustomTabPanel>
+
+      <CustomTabPanel value={value} index={2}>
+        <NFTsTab address={address} />
       </CustomTabPanel>
     </Box>
   );
