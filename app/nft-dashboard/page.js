@@ -10,12 +10,11 @@ import { BackButton } from "@/components";
 import { getNftImage } from "@/utils/nft";
 
 function DashboardComponent() {
-  const [imageURL, setImageURL] = useState('/img/fallbackImage.png');
+  const [imageURL, setImageURL] = useState('/img/nft.png');
   const searchParams = useSearchParams();
   const address = searchParams.get("address");
   const contractAddress = searchParams.get("contractAddress");
   const tokenId = searchParams.get("tokenId");
-  const symbol = searchParams.get("symbol");
   const nftName = searchParams.get("nftName");
 
   useEffect(() => {
@@ -37,7 +36,7 @@ function DashboardComponent() {
         </Box>
 
         <Typography sx={{ fontSize: "18px", fontWeight: "600", mb: '1rem' }}>
-          {nftName}
+          {`${nftName} (#${tokenId})`}
         </Typography>
 
         <Box>
@@ -47,7 +46,6 @@ function DashboardComponent() {
             width={280}
             height={224}
             priority
-            cover
           />
         </Box>
 
@@ -69,7 +67,7 @@ function DashboardComponent() {
           variant="contained"
         >
           <Link
-            href={`/send-nft?address=${address}&contractAddress=${contractAddress}&symbol=${symbol}`}
+            href={`/send-nft?address=${address}&contractAddress=${contractAddress}&tokenId=${tokenId}`}
             style={{ width: "100%" }}
           >
             Send

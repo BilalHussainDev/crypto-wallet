@@ -35,7 +35,6 @@ export async function getNftDetails(userAddress, contractAddress, tokenId) {
   }
 }
 
-
 export const getNftImage = async (contractAddress, tokenId) => {
   const nftContract = new web3.eth.Contract(nftABI, contractAddress);
   const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
@@ -44,32 +43,28 @@ export const getNftImage = async (contractAddress, tokenId) => {
   return data.image;
 };
 
-// transfer tokens
-export async function sendToken({
+export async function sendNft({
   from,
   to,
-  amount,
+  tokenId,
   privateKey,
-  tokenAddress,
+  contractAddress,
 }) {
+  console.log('Inside utils/sendNft')
   try {
-    const tokenContract = new web3.eth.Contract(nftABI, tokenAddress);
-    const symbol = await tokenContract.methods.symbol().call();
+    const tokenContract = new web3.eth.Contract(nftABI, contractAddress);
 
     // Create transaction
-    const transaction = tokenContract.methods.transfer(
-      to,
-      web3.utils.toWei(amount, "ether")
-    );
+    const transaction = tokenContract.methods.transferFrom(from, to, tokenId);
 
     const gas = await transaction.estimateGas({ from });
     const gasPrice = await web3.eth.getGasPrice();
-    const data = transaction.encodetokenABI();
+    const data = transaction.encodeABI();
     const nonce = await web3.eth.getTransactionCount(from);
 
     const tx = {
       from,
-      to: tokenAddress,
+      to: contractAddress,
       gas,
       gasPrice,
       data,
@@ -78,6 +73,7 @@ export async function sendToken({
 
     // Sign transaction
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
+    console.log(signedTx)
 
     // Send signed transaction
     const receipt = await web3.eth.sendSignedTransaction(
@@ -92,20 +88,19 @@ export async function sendToken({
       transactionHash: receipt.transactionHash,
       from,
       to,
-      value: amount,
+      tokenId,
       transactionDate,
-      tokenSymbol: symbol,
     };
 
     return {
       ok: true,
-      message: "Token transfer successful",
+      message: "NFT transfer successful",
       transactionDetails,
     };
   } catch (err) {
     return {
       ok: false,
-      message: err.message || "Token transfer failed",
+      message: err.message || "NFT transfer failed",
     };
   }
 }
@@ -115,13 +110,13 @@ export const storeNFT = (accountAddress, contractAddress, tokenId) => {
   // get previously stored NFTs from local storage
   const nfts = JSON.parse(localStorage.getItem("nfts")) || {};
 
-    // update transactions history
-    nfts[accountAddress] = nfts[accountAddress]
-      ? [...nfts[accountAddress], { contractAddress, tokenId }]
-      : [{ contractAddress, tokenId }];
+  // update transactions history
+  nfts[accountAddress] = nfts[accountAddress]
+    ? [...nfts[accountAddress], { contractAddress, tokenId }]
+    : [{ contractAddress, tokenId }];
 
-    // store transaction again in local storage
-    localStorage.setItem("nfts", JSON.stringify(nfts));
+  // store transaction again in local storage
+  localStorage.setItem("nfts", JSON.stringify(nfts));
 };
 
 // retrive account related nft list form local storage

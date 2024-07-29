@@ -27,14 +27,13 @@ export default function NFTsTab({ address }) {
             return nftDetails;
           })
         )
-        console.log(nfts)
         setNftList(nfts);
 
       } catch (error) {
         setNftList([]);
-        throw new Error(
-          "Error fetching NFT details. Might be due to Network Issue. Check your internet and try again."
-        );
+        // throw new Error(
+        //   "Error fetching NFT details. Might be due to Network Issue. Check your internet and try again."
+        // );
       }
     };
 
@@ -98,8 +97,7 @@ function SingleToken({ tokenDetails }) {
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         borderRadius: "8px",
         padding: "4px",
-        backgroundImage:
-          "linear-gradient(180deg, #f0fdff, #e4f1f7 80%)",
+        backgroundColor: "#e3edff",
         cursor: "pointer",
         mb: "8px",
         p: "10px 12px 12px 12px",
@@ -136,7 +134,10 @@ function SingleToken({ tokenDetails }) {
           >
             {tokenDetails.name}
           </Typography>
-          <Typography color="primary" sx={{ fontSize: "12px", textAlign: 'left' }}>
+          <Typography
+            color="primary"
+            sx={{ fontSize: "12px", textAlign: "left" }}
+          >
             {tokenDetails.symbol}
           </Typography>
         </Box>
