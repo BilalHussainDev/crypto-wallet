@@ -27,6 +27,7 @@ export default function NFTsTab({ address }) {
             return nftDetails;
           })
         )
+        console.log(nfts)
         setNftList(nfts);
 
       } catch (error) {
@@ -50,7 +51,7 @@ export default function NFTsTab({ address }) {
             nftList.map((nftDetails, i) => (
               <Box key={i + 1}>
                 <Link
-                  href={`/nft-dashboard?address=${address}&contractAddress=${nftDetails.contractAddress}&symbol=${nftDetails.tokenId}`}
+                  href={`/nft-dashboard?address=${address}&contractAddress=${nftDetails.contractAddress}&tokenId=${nftDetails.tokenId}&symbol=${nftDetails.symbol}&nftName=${nftDetails.name}`}
                 >
                   <SingleToken tokenDetails={nftDetails} />
                 </Link>
