@@ -2,37 +2,37 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  getTokenAddressList,
-  getTokenBalance,
-  getTokenDetails,
-} from "@/utils/token";
+import { getAccountNftList, getNftDetails } from "@/utils/nft";
 
 export default function NFTsTab({ address }) {
-  const [tokenList, setTokenList] = useState(null);
+  const [nftList, setNftList] = useState(null);
 
   useEffect(() => {
     const fetchTokens = async () => {
       try {
-        const tokenAddressList = getTokenAddressList(address);
-        const tokens = await Promise.all(
-          tokenAddressList.map(async (tokenAddress) => {
-            const res = await getTokenDetails(tokenAddress);
+        const accountNftList = getAccountNftList(address);
+        const nfts = await Promise.all(
+          accountNftList.map(async (nftObj) => {
+            const res = await getNftDetails(
+              address,
+              nftObj.contractAddress,
+              nftObj.tokenId
+            );
             if (!res.ok) {
               throw new Error(res.message);
             }
-            const tokenDetails = res.data;
-            const tokenAmount = await getTokenBalance(address, tokenAddress);
-            tokenDetails.balance = tokenAmount;
-            tokenDetails.address = tokenAddress;
-            return tokenDetails;
+            const nftDetails = res.data;
+            nftDetails.contractAddress = nftObj.contractAddress;
+            nftDetails.tokenId = nftObj.tokenId;
+            return nftDetails;
           })
-        );
-        setTokenList(tokens);
+        )
+        setNftList(nfts);
+
       } catch (error) {
-        setTokenList([]);
+        setNftList([]);
         throw new Error(
-          "Error fetching token details. Might be due to Network Issue. Check your internet and try again."
+          "Error fetching NFT details. Might be due to Network Issue. Check your internet and try again."
         );
       }
     };
@@ -42,19 +42,21 @@ export default function NFTsTab({ address }) {
 
   return (
     <>
-      {!tokenList ? (
+      {!nftList ? (
         <CircularProgress />
       ) : (
         <>
-          {false && tokenList.map((tokenDetails, i) => (
-            <Box key={i + 1}>
-              <Link
-                href={`/token-dashboard?address=${address}&tokenAddress=${tokenDetails.address}&symbol=${tokenDetails.symbol}`}
-              >
-                <SingleToken tokenDetails={tokenDetails} />
-              </Link>
-            </Box>
-          ))}
+          {
+            nftList.map((nftDetails, i) => (
+              <Box key={i + 1}>
+                <Link
+                  href={`/nft-dashboard?address=${address}&contractAddress=${nftDetails.contractAddress}&symbol=${nftDetails.tokenId}`}
+                >
+                  <SingleToken tokenDetails={nftDetails} />
+                </Link>
+              </Box>
+            ))}
+
           <Link href={`/import-nft?address=${address}`}>
             <Box
               sx={{
@@ -92,8 +94,11 @@ function SingleToken({ tokenDetails }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#e5feff",
-        borderRadius: "10px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        borderRadius: "8px",
+        padding: "4px",
+        backgroundImage:
+          "linear-gradient(180deg, #f0fdff, #e4f1f7 80%)",
         cursor: "pointer",
         mb: "8px",
         p: "10px 12px 12px 12px",
@@ -130,8 +135,8 @@ function SingleToken({ tokenDetails }) {
           >
             {tokenDetails.name}
           </Typography>
-          <Typography color="primary" sx={{ fontSize: "12px" }}>
-            {(+tokenDetails.balance).toFixed(4)} {tokenDetails.symbol}
+          <Typography color="primary" sx={{ fontSize: "12px", textAlign: 'left' }}>
+            {tokenDetails.symbol}
           </Typography>
         </Box>
       </Box>

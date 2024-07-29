@@ -36,10 +36,12 @@ export async function getNftDetails(userAddress, contractAddress, tokenId) {
 }
 
 
-export const getTokenBalance = async (address, tokenAddress) => {
-  const tokenContract = new web3.eth.Contract(nftABI, tokenAddress);
-  const balance = await tokenContract.methods.balanceOf(address).call();
-  return web3.utils.fromWei(balance, "ether");
+export const getNftImage = async (contractAddress, tokenId) => {
+  const nftContract = new web3.eth.Contract(nftABI, contractAddress);
+  const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
+  const res = await fetch(tokenURI);
+  const data = await res.json();
+  return data.image;
 };
 
 // transfer tokens
@@ -109,27 +111,24 @@ export async function sendToken({
 }
 
 // save NFT addresses in local storage
-export const storeNFT = (address, nftAddress) => {
-  // get NFTs from local storage
+export const storeNFT = (accountAddress, contractAddress, tokenId) => {
+  // get previously stored NFTs from local storage
   const nfts = JSON.parse(localStorage.getItem("nfts")) || {};
 
-  // check for already imported NFTs
-  if (!nfts[address] || !nfts[address].includes(nftAddress)) {
     // update transactions history
-    nfts[address] = nfts[address]
-      ? [...nfts[address], nftAddress]
-      : [nftAddress];
+    nfts[accountAddress] = nfts[accountAddress]
+      ? [...nfts[accountAddress], { contractAddress, tokenId }]
+      : [{ contractAddress, tokenId }];
 
     // store transaction again in local storage
     localStorage.setItem("nfts", JSON.stringify(nfts));
-  }
 };
 
-// retrieve token addresses from local storage
-export const getTokenAddressList = (address) => {
-  const tokens = JSON.parse(localStorage.getItem("tokens"));
-  if (tokens && tokens[address]) {
-    return tokens[address];
+// retrive account related nft list form local storage
+export const getAccountNftList = (address) => {
+  const nfts = JSON.parse(localStorage.getItem("nfts"));
+  if (nfts && nfts[address]) {
+    return nfts[address];
   }
   return [];
 };

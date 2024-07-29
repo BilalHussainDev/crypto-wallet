@@ -37,16 +37,14 @@ const ImportToken = ({ address }) => {
     if (!res.ok) {
       setMessage(res.message);
       return;
-    } 
-
-    console.log(res.data)
+    }
 
     // store NFT data in local storage
-    // storeNFT(address, data.contractAddress, data.id);
+    storeNFT(address, data.contractAddress, data.id);
 
     // redirect to dashboard with account address
-    // router.replace(`/dashboard?address=${address}`);
-    // actions.resetForm();
+    router.replace(`/dashboard?address=${address}`);
+    actions.resetForm();
   }
 
   // Extracting Form State and Helper Methods from formik
