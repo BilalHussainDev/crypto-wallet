@@ -4,6 +4,7 @@ export { default as AssetsTab } from "./AssetsTab";
 export { default as ButtonLoader } from "./ButtonLoader";
 export { default as DashboardTabs } from "./DashboardTabs";
 export { default as Header } from "./Header";
+export { default as ImportNFT } from "./ImportNFT";
 export { default as ImportToken } from "./ImportToken";
 export { default as Logo } from "./Logo";
 export { default as NFTsTab } from "./NFTsTab";

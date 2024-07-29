@@ -1,41 +1,57 @@
 import { getWeb3 } from "@/constants/web3";
-import { tokenABI } from '@/constants/abi';
+import { nftABI } from "@/constants/abi";
 
 const web3 = getWeb3();
 
-export async function getTokenDetails(tokenAddress) {
+export async function getNftDetails(userAddress, contractAddress, tokenId) {
   try {
-    const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
-    const name = await tokenContract.methods.name().call();
-    const symbol = await tokenContract.methods.symbol().call();
-    const decimals = await tokenContract.methods.decimals().call();
+    const nftContract = new web3.eth.Contract(nftABI, contractAddress);
+
+    // Check ownership of the tokenId
+    const owner = await nftContract.methods.ownerOf(tokenId).call();
+    if (owner.toLowerCase() !== userAddress.toLowerCase()) {
+      return {
+        ok: false,
+        message: "User is not the owner of the NFT",
+      };
+    }
+
+    // Fetching the name and symbol of the NFT contract
+    const name = await nftContract.methods.name().call();
+    const symbol = await nftContract.methods.symbol().call();
 
     return {
       ok: true,
       data: {
         name,
         symbol,
-        decimals,
       },
     };
   } catch (error) {
     return {
       ok: false,
-      message: 'Invalid contract address'
-    }
+      message: "Invalid contract address or tokenId",
+    };
   }
 }
 
+
 export const getTokenBalance = async (address, tokenAddress) => {
-  const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+  const tokenContract = new web3.eth.Contract(nftABI, tokenAddress);
   const balance = await tokenContract.methods.balanceOf(address).call();
   return web3.utils.fromWei(balance, "ether");
 };
 
 // transfer tokens
-export async function sendToken({ from, to, amount, privateKey, tokenAddress }) {
+export async function sendToken({
+  from,
+  to,
+  amount,
+  privateKey,
+  tokenAddress,
+}) {
   try {
-    const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+    const tokenContract = new web3.eth.Contract(nftABI, tokenAddress);
     const symbol = await tokenContract.methods.symbol().call();
 
     // Create transaction
@@ -46,7 +62,7 @@ export async function sendToken({ from, to, amount, privateKey, tokenAddress }) 
 
     const gas = await transaction.estimateGas({ from });
     const gasPrice = await web3.eth.getGasPrice();
-    const data = transaction.encodeABI();
+    const data = transaction.encodetokenABI();
     const nonce = await web3.eth.getTransactionCount(from);
 
     const tx = {
@@ -62,7 +78,9 @@ export async function sendToken({ from, to, amount, privateKey, tokenAddress }) 
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
 
     // Send signed transaction
-    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    const receipt = await web3.eth.sendSignedTransaction(
+      signedTx.rawTransaction
+    );
 
     // Create transaction details to return
     const date = new Date();
@@ -90,21 +108,20 @@ export async function sendToken({ from, to, amount, privateKey, tokenAddress }) 
   }
 }
 
-// save token addresses in local storage
-export const storeToken = (address, tokenAddress) => {
-  // get transactions from local storage
-  const tokens = JSON.parse(localStorage.getItem("tokens")) || {};
+// save NFT addresses in local storage
+export const storeNFT = (address, nftAddress) => {
+  // get NFTs from local storage
+  const nfts = JSON.parse(localStorage.getItem("nfts")) || {};
 
-  // check for already imported token
-  if (!tokens[address] || !tokens[address].includes(tokenAddress)) {
-    
+  // check for already imported NFTs
+  if (!nfts[address] || !nfts[address].includes(nftAddress)) {
     // update transactions history
-    tokens[address] = tokens[address]
-    ? [...tokens[address], tokenAddress]
-    : [tokenAddress];
-    
+    nfts[address] = nfts[address]
+      ? [...nfts[address], nftAddress]
+      : [nftAddress];
+
     // store transaction again in local storage
-    localStorage.setItem("tokens", JSON.stringify(tokens));
+    localStorage.setItem("nfts", JSON.stringify(nfts));
   }
 };
 

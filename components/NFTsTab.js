@@ -46,7 +46,7 @@ export default function NFTsTab({ address }) {
         <CircularProgress />
       ) : (
         <>
-          {tokenList.map((tokenDetails, i) => (
+          {false && tokenList.map((tokenDetails, i) => (
             <Box key={i + 1}>
               <Link
                 href={`/token-dashboard?address=${address}&tokenAddress=${tokenDetails.address}&symbol=${tokenDetails.symbol}`}
@@ -55,7 +55,7 @@ export default function NFTsTab({ address }) {
               </Link>
             </Box>
           ))}
-          <Link href={`/import-token?address=${address}`}>
+          <Link href={`/import-nft?address=${address}`}>
             <Box
               sx={{
                 mt: "1rem",

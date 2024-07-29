@@ -1,4 +1,4 @@
-import { getWeb3 } from "./web3";
+import { getWeb3 } from "@/constants/web3";
 
 const web3 = getWeb3();
 
