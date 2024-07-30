@@ -36,7 +36,6 @@ export const getTokenBalance = async (address, tokenAddress) => {
 export async function sendToken({ from, to, amount, privateKey, tokenAddress }) {
   try {
     const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
-    const symbol = await tokenContract.methods.symbol().call();
 
     // Create transaction
     const transaction = tokenContract.methods.transfer(
@@ -64,23 +63,10 @@ export async function sendToken({ from, to, amount, privateKey, tokenAddress }) 
     // Send signed transaction
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    // Create transaction details to return
-    const date = new Date();
-    const options = { month: "short", day: "2-digit" };
-    const transactionDate = date.toLocaleDateString("en-US", options);
-    const transactionDetails = {
-      transactionHash: receipt.transactionHash,
-      from,
-      to,
-      value: amount,
-      transactionDate,
-      tokenSymbol: symbol,
-    };
-
     return {
       ok: true,
       message: "Token transfer successful",
-      transactionDetails,
+      receipt,
     };
   } catch (err) {
     return {

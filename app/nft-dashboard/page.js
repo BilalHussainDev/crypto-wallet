@@ -15,6 +15,7 @@ function DashboardComponent() {
   const address = searchParams.get("address");
   const contractAddress = searchParams.get("contractAddress");
   const tokenId = searchParams.get("tokenId");
+  const symbol = searchParams.get("symbol");
   const nftName = searchParams.get("nftName");
 
   useEffect(() => {
@@ -67,7 +68,7 @@ function DashboardComponent() {
           variant="contained"
         >
           <Link
-            href={`/send-nft?address=${address}&contractAddress=${contractAddress}&tokenId=${tokenId}`}
+            href={`/send-nft?address=${address}&contractAddress=${contractAddress}&tokenId=${tokenId}&symbol=${symbol}`}
             style={{ width: "100%" }}
           >
             Send

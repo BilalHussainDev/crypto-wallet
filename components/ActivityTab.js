@@ -1,19 +1,20 @@
 import { getTransactionHistory } from "@/utils/transaction";
-import {Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function ActivityTab({address, activityOf}){
-
+export default function ActivityTab({ address, activityOf }) {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
-      if (address) {
-        const accountTransactions = await getTransactionHistory(
-          address,
-          activityOf
+      const allTransactions = await getTransactionHistory(address);
+      if (activityOf) {
+        const specificTransactions = allTransactions.filter(
+          (tx) => tx.symbol === activityOf
         );
-        setTransactions(accountTransactions);
+        setTransactions(specificTransactions)
+      } else {
+        setTransactions(allTransactions);
       }
     };
     fetchAccountDetails();
@@ -39,10 +40,10 @@ export default function ActivityTab({address, activityOf}){
               key={index}
             >
               <Typography textAlign="left">{tx.transactionDate}</Typography>
-              <Typography sx={{ color: "#1976d2" }}>{tx.amount} {tx.symbol}</Typography>
-              <Typography textAlign="right">
-                Send
+              <Typography sx={{ color: "#1976d2" }}>
+                {tx.amount} {tx.symbol}
               </Typography>
+              <Typography textAlign="right">Send</Typography>
             </Box>
           ))}
         </Box>

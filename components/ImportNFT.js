@@ -39,6 +39,11 @@ const ImportToken = ({ address }) => {
       return;
     }
 
+    if (!res.owner) {
+      setMessage("User is not the owner of the NFT");
+      return;
+    }
+
     // store NFT data in local storage
     storeNFT(address, data.contractAddress, data.id);
 

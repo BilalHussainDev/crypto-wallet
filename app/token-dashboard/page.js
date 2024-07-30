@@ -111,7 +111,9 @@ function DashboardComponent() {
           Activity
         </Typography>
 
-        <ActivityTab address={address} activityOf={symbol} />
+        <Box mb='1rem'>
+          <ActivityTab address={address} activityOf={symbol} />
+        </Box>
       </Box>
 
       {/* Disable all interactions while loading */}

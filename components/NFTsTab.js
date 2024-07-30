@@ -31,9 +31,9 @@ export default function NFTsTab({ address }) {
 
       } catch (error) {
         setNftList([]);
-        // throw new Error(
-        //   "Error fetching NFT details. Might be due to Network Issue. Check your internet and try again."
-        // );
+        throw new Error(
+          "Error fetching NFT details. Might be due to Network Issue. Check your internet and try again."
+        );
       }
     };
 

@@ -8,24 +8,20 @@ export async function getNftDetails(userAddress, contractAddress, tokenId) {
   try {
     const nftContract = new web3.eth.Contract(nftABI, contractAddress);
 
-    // Check ownership of the tokenId
-    const owner = await nftContract.methods.ownerOf(tokenId).call();
-    if (owner.toLowerCase() !== userAddress.toLowerCase()) {
-      return {
-        ok: false,
-        message: "User is not the owner of the NFT",
-      };
-    }
-
     // Fetching the name and symbol of the NFT contract
     const name = await nftContract.methods.name().call();
     const symbol = await nftContract.methods.symbol().call();
+
+    // Check ownership of the tokenId
+    const owner = await nftContract.methods.ownerOf(tokenId).call();
+    const isowner = owner.toLowerCase() === userAddress.toLowerCase();
 
     return {
       ok: true,
       data: {
         name,
         symbol,
+        isowner
       },
     };
   } catch (error) {
@@ -81,22 +77,10 @@ export async function sendNft({
       signedTx.rawTransaction
     );
 
-    // Create transaction details to return
-    const date = new Date();
-    const options = { month: "short", day: "2-digit" };
-    const transactionDate = date.toLocaleDateString("en-US", options);
-    const transactionDetails = {
-      transactionHash: receipt.transactionHash,
-      from,
-      to,
-      tokenId,
-      transactionDate,
-    };
-
     return {
       ok: true,
       message: "NFT transfer successful",
-      transactionDetails,
+      receipt,
     };
   } catch (err) {
     return {

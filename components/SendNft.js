@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
@@ -28,8 +27,6 @@ const formSchema = object({
 const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
   const [transactionHash, setTransactionHash] = useState("");
 
-  const router = useRouter();
-
   async function handleTransferSubmit(data, actions) {
     // Simulate a delay
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -55,7 +52,7 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
     const { privateKey } = getAccountFromMnemonic(key);
 
     // send transaction
-    const transactionResponse = await sendNft({
+    const res = await sendNft({
       to: data.to,
       from,
       tokenId,
@@ -63,15 +60,15 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
       contractAddress,
     });
 
-    if (transactionResponse.ok) {
-      storeTransactionHistory(transactionResponse.transactionDetails, symbol);
+    if (res.ok) {
+      storeTransactionHistory(res.receipt, 0, symbol);
       setTransactionHash(
-        transactionResponse.transactionDetails.transactionHash
+        res.receipt.transactionHash
       );
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
-      throw new Error(transactionResponse.message);
+      throw new Error(res.message);
     }
   }
 

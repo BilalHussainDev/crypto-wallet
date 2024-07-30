@@ -62,7 +62,7 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
     const { privateKey } = getAccountFromMnemonic(key);
 
     // send transaction
-    const transactionResponse = await sendToken({
+    const res = await sendToken({
       to: data.to,
       from,
       amount: data.amount,
@@ -70,15 +70,15 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
       tokenAddress,
     });
 
-    if (transactionResponse.ok) {
-      storeTransactionHistory(transactionResponse.transactionDetails, symbol);
+    if (res.ok) {
+      storeTransactionHistory(res.receipt, data.amount, symbol);
       setTransactionHash(
-        transactionResponse.transactionDetails.transactionHash
+        res.receipt.transactionHash
       );
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
-      throw new Error(transactionResponse.message);
+      throw new Error(res.message);
     }
   }
 
