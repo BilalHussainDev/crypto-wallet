@@ -2,7 +2,7 @@ import { getTransactionHistory } from "@/utils/transaction";
 import {Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function ActivityTab({address, activityOf = 'ETH'}){
+export default function ActivityTab({address, activityOf}){
 
   const [transactions, setTransactions] = useState([]);
 
@@ -39,9 +39,9 @@ export default function ActivityTab({address, activityOf = 'ETH'}){
               key={index}
             >
               <Typography textAlign="left">{tx.transactionDate}</Typography>
-              <Typography sx={{ color: "#1976d2" }}>{tx.value} {tx.tokenSymbol || 'ETH'}</Typography>
+              <Typography sx={{ color: "#1976d2" }}>{tx.amount} {tx.symbol}</Typography>
               <Typography textAlign="right">
-                {address === tx.from ? "Sent" : "Recieved "}
+                Send
               </Typography>
             </Box>
           ))}

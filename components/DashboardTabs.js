@@ -64,7 +64,7 @@ export default function DashboardTabs({ address }) {
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-        <ActivityTab address={address} />
+        <ActivityTab address={address} activityOf={"main"}/>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>

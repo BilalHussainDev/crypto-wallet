@@ -18,13 +18,12 @@ export const sendTransaction = async ({ to, from, amount, privateKey }) => {
       from,
       to,
       value: web3.utils.toWei(amount, "ether"),
-      // maxFeePerGas: block.baseFeePerGas * 2n,
-      // maxPriorityFeePerGas: 100000,
     };
 
-    transactionParams.gas = await web3.eth.estimateGas(
-      transactionParams
-    );
+    // calculate gas
+    transactionParams.gas = await web3.eth.estimateGas(transactionParams);
+
+    // calculate gas price
     transactionParams.gasPrice = await web3.eth.getGasPrice();
 
     // sign the transaction
@@ -38,22 +37,10 @@ export const sendTransaction = async ({ to, from, amount, privateKey }) => {
       signedTransaction.rawTransaction
     );
 
-    // create transactionDetails to return back
-    const date = new Date();
-    const options = { month: "short", day: "2-digit" };
-    const transactionDate = date.toLocaleDateString("en-US", options);
-    const transactionDetails = {
-      transactionHash: receipt.transactionHash,
-      from,
-      to,
-      value: amount,
-      transactionDate,
-    };
-
     return {
       ok: true,
       message: "Transaction Successful",
-      transactionDetails,
+      receipt,
     };
   } catch (err) {
     return {
@@ -63,29 +50,46 @@ export const sendTransaction = async ({ to, from, amount, privateKey }) => {
   }
 };
 
-export const storeTransactionHistory = (transactionDetails, activityOf) => {
-  console.log(activityOf)
-  // get transactions from local storage
-  const transactions = JSON.parse(localStorage.getItem(activityOf)) || {};
+export const storeTransactionHistory = (receipt, amount, symbol) => {
+  // find transaction date
+  const date = new Date();
+  const options = { month: "short", day: "2-digit" };
+  const transactionDate = date.toLocaleDateString("en-US", options);
 
-  const to = transactionDetails.to;
-  const from = transactionDetails.from;
-  
-  // update transactions history
+  // extract required fields from receipt
+  const transactionHash = receipt.transactionHash;
+  const from = receipt.from;
+  const to = receipt.to;
+
+  // create transaction Obj to store
+  const transactionDetails = {
+    transactionHash,
+    transactionDate,
+    from,
+    to,
+    amount,
+    symbol,
+  };
+
+  // get stored transactions from local storage
+  const transactions = JSON.parse(localStorage.getItem("transactions")) || {};
+
+  // update transactions of current account
   transactions[from] = transactions[from]
-    ? [...transactions[from], transactionDetails]
-    : [transactionDetails];
-
-  transactions[to] = transactions[to]
-    ? [...transactions[to], transactionDetails]
+    ? [transactionDetails, ...transactions[from]]
     : [transactionDetails];
 
   // store transaction again in local storage
-  localStorage.setItem(activityOf, JSON.stringify(transactions));
+  localStorage.setItem("transactions", JSON.stringify(transactions));
 };
 
-export const getTransactionHistory = (address, activityOf) => {
-  const transactions = JSON.parse(localStorage.getItem(activityOf));
+export const getTransactionHistory = (address) => {
+  // get stored transactions from local storage
+  const transactions = JSON.parse(
+    localStorage.getItem("transactions")
+  );
+
+  // check if there is no transaction 
   if (!transactions || !transactions[address]) {
     return [];
   }

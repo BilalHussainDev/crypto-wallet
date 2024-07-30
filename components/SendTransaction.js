@@ -66,22 +66,20 @@ const SendTransaction = ({ from, balance }) => {
     const { privateKey } = getAccountFromMnemonic(key);
 
     // send transaction
-    const transactionResponse = await sendTransaction({
+    const res = await sendTransaction({
       to: data.to,
       from,
       amount: data.amount,
       privateKey,
     });
 
-    if (transactionResponse.ok) {
-      storeTransactionHistory(transactionResponse.transactionDetails, "ETH");
-      setTransactionHash(
-        transactionResponse.transactionDetails.transactionHash
-      );
+    if (res.ok) {
+      storeTransactionHistory(res.receipt, data.amount, "ETH");
+      setTransactionHash(res.receipt.transactionHash);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
-      throw new Error(transactionResponse.message);
+      throw new Error(res.message);
     }
   }
 

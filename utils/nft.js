@@ -3,6 +3,7 @@ import { nftABI } from "@/constants/abi";
 
 const web3 = getWeb3();
 
+// import nft
 export async function getNftDetails(userAddress, contractAddress, tokenId) {
   try {
     const nftContract = new web3.eth.Contract(nftABI, contractAddress);
@@ -35,6 +36,7 @@ export async function getNftDetails(userAddress, contractAddress, tokenId) {
   }
 }
 
+// give nft image
 export const getNftImage = async (contractAddress, tokenId) => {
   const nftContract = new web3.eth.Contract(nftABI, contractAddress);
   const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
@@ -43,6 +45,7 @@ export const getNftImage = async (contractAddress, tokenId) => {
   return data.image;
 };
 
+// transfer nft
 export async function sendNft({
   from,
   to,
@@ -50,7 +53,6 @@ export async function sendNft({
   privateKey,
   contractAddress,
 }) {
-  console.log('Inside utils/sendNft')
   try {
     const tokenContract = new web3.eth.Contract(nftABI, contractAddress);
 
@@ -73,7 +75,6 @@ export async function sendNft({
 
     // Sign transaction
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
-    console.log(signedTx)
 
     // Send signed transaction
     const receipt = await web3.eth.sendSignedTransaction(
