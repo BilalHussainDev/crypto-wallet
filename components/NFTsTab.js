@@ -26,9 +26,8 @@ export default function NFTsTab({ address }) {
             nftDetails.tokenId = nftObj.tokenId;
             return nftDetails;
           })
-        )
+        );
         setNftList(nfts);
-
       } catch (error) {
         setNftList([]);
         throw new Error(
@@ -46,16 +45,19 @@ export default function NFTsTab({ address }) {
         <CircularProgress />
       ) : (
         <>
-          {
-            nftList.map((nftDetails, i) => (
-              <Box key={i + 1}>
+          {nftList.map((nftDetails, i) => (
+            <Box key={i + 1}>
+              {nftDetails.isOwner ? (
                 <Link
                   href={`/nft-dashboard?address=${address}&contractAddress=${nftDetails.contractAddress}&tokenId=${nftDetails.tokenId}&symbol=${nftDetails.symbol}&nftName=${nftDetails.name}`}
                 >
                   <SingleToken tokenDetails={nftDetails} />
                 </Link>
-              </Box>
-            ))}
+              ) : (
+                <SingleToken tokenDetails={nftDetails} />
+              )}
+            </Box>
+          ))}
 
           <Link href={`/import-nft?address=${address}`}>
             <Box
@@ -94,13 +96,15 @@ function SingleToken({ tokenDetails }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         borderRadius: "8px",
         padding: "4px",
-        backgroundColor: "#dbfeff",
-        cursor: "pointer",
         mb: "8px",
         p: "10px 12px 12px 12px",
+        backgroundColor: "#e4f1f7",
+        ...(tokenDetails.isOwner && {
+          backgroundColor: "#dbfeff",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }),
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -110,11 +114,13 @@ function SingleToken({ tokenDetails }) {
             height: "34px",
             marginRight: "12px",
             borderRadius: "10px",
-            boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
             backgroundColor: "rgb(255, 255, 255)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            ...(tokenDetails.isOwner && {
+              boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
+            }),
           }}
         >
           <Typography fontWeight="bold" color="primary">
@@ -132,7 +138,7 @@ function SingleToken({ tokenDetails }) {
               textAlign: "left",
             }}
           >
-            {tokenDetails.name}
+            {tokenDetails.isOwner ? tokenDetails.name : "Previously Owned"}
           </Typography>
           <Typography
             color="primary"
@@ -148,11 +154,13 @@ function SingleToken({ tokenDetails }) {
           width: "29px",
           height: "28px",
           borderRadius: "10px",
-          boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
           backgroundColor: "#ffffff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          ...(tokenDetails.isOwner && {
+            boxShadow: "rgba(202, 206, 220, 0.3) 7px 7px 10px",
+          }),
         }}
       >
         <ArrowForwardIosIcon fontSize="x-small" sx={{ ml: "2px" }} />

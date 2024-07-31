@@ -39,7 +39,7 @@ const ImportToken = ({ address }) => {
       return;
     }
 
-    if (!res.owner) {
+    if (!res.isOwner) {
       setMessage("User is not the owner of the NFT");
       return;
     }

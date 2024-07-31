@@ -14,14 +14,14 @@ export async function getNftDetails(userAddress, contractAddress, tokenId) {
 
     // Check ownership of the tokenId
     const owner = await nftContract.methods.ownerOf(tokenId).call();
-    const isowner = owner.toLowerCase() === userAddress.toLowerCase();
+    const isOwner = owner.toLowerCase() === userAddress.toLowerCase();
 
     return {
       ok: true,
       data: {
         name,
         symbol,
-        isowner
+        isOwner
       },
     };
   } catch (error) {
