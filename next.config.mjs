@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "harlequin-decent-vole-965.mypinata.cloud",
+        hostname: "**",
         pathname: "**",
       },
     ],
