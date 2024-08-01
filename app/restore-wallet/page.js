@@ -37,18 +37,19 @@ const formSchema = object({
 const RestoreWallet = () => {
   const router = useRouter();
 
-  const handleMnemonicSubmit = (data, { resetForm }) => {
-    setTimeout(() => {
-      // encrypt mnemonic
-      const encrypted = encrypt(data.mnemonic, data.password);
-      if (encrypted.ok) {
-        // store encrypted mnemonic
-        localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
-      }
-      const res = getAccountFromMnemonic(data.mnemonic);
-      router.replace(`/dashboard?address=${res.address}`);
-      resetForm();
-    }, 0);
+  const handleMnemonicSubmit = async (data, { resetForm }) => {
+    // Simulate a delay to break the flow
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // encrypt mnemonic
+    const encrypted = encrypt(data.mnemonic, data.password);
+    if (encrypted.ok) {
+      // store encrypted mnemonic
+      localStorage.setItem("encryptedKey", JSON.stringify(encrypted.key));
+    }
+    const res = getAccountFromMnemonic(data.mnemonic);
+    router.replace(`/dashboard?address=${res.address}`);
+    resetForm();
   };
 
   // Extracting Form State and Helper Methods from formik
@@ -152,7 +153,9 @@ const RestoreWallet = () => {
         {isSubmitting ? (
           <span style={{ color: "#86a4c2" }}>Cancel</span>
         ) : (
-          <Link href="/" replace>Cancel</Link>
+          <Link href="/" replace>
+            Cancel
+          </Link>
         )}
       </Typography>
     </>
