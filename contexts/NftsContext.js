@@ -1,12 +1,19 @@
-'use client'
-import { createContext, useContext, useState } from "react";
+"use client";
+import { createContext, useContext, useEffect, useState } from "react";
 
 // Creating Context
 const NftsContext = createContext();
 
 // Context Provider Function
 function NftsProvider({ children }) {
-  const [nfts, setNfts] = useState([]);
+  const [nfts, setNfts] = useState({});
+
+  useEffect(() => {
+    const savedNfts = localStorage.getItem("nfts");
+    if (savedNfts) {
+      setNfts(JSON.parse(savedNfts));
+    }
+  }, []);
 
   return (
     <NftsContext.Provider value={{ nfts, setNfts }}>

@@ -2,17 +2,24 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getAccountNftList, getNftDetails } from "@/utils/nft";
+import { getAllStoredNfts, getNftDetails } from "@/utils/nft";
+import { useNfts } from "@/contexts/nftsContext";
 
 export default function NFTsTab({ address }) {
-  const [nftList, setNftList] = useState(null);
+  const [nftDetailsList, setNftDetailsList] = useState(null);
+
+  const { setNfts } = useNfts();
 
   useEffect(() => {
     const fetchTokens = async () => {
       try {
-        const accountNftList = getAccountNftList(address);
+        const storedNfts = getAllStoredNfts();
+        setNfts(storedNfts);
+
+        const nftList = storedNfts[address] || [];
+
         const nfts = await Promise.all(
-          accountNftList.map(async (nftObj) => {
+          nftList.map(async (nftObj) => {
             const res = await getNftDetails(
               address,
               nftObj.contractAddress,
@@ -27,9 +34,10 @@ export default function NFTsTab({ address }) {
             return nftDetails;
           })
         );
-        setNftList(nfts);
+        setNftDetailsList(nfts);
       } catch (error) {
-        setNftList([]);
+        setNftDetailsList([]);
+        console.log(error);
         throw new Error(
           "Error fetching NFT details. Might be due to Network Issue. Check your internet and try again."
         );
@@ -41,11 +49,11 @@ export default function NFTsTab({ address }) {
 
   return (
     <>
-      {!nftList ? (
+      {!nftDetailsList ? (
         <CircularProgress />
       ) : (
         <>
-          {nftList.map((nftDetails, i) => (
+          {nftDetailsList.map((nftDetails, i) => (
             <Box key={i + 1}>
               {nftDetails.isOwner ? (
                 <Link
@@ -98,7 +106,7 @@ function SingleToken({ tokenDetails }) {
         alignItems: "center",
         borderRadius: "8px",
         padding: "4px",
-        mb: "8px",
+        mb: "1rem",
         p: "10px 12px 12px 12px",
         backgroundColor: "#e4f1f7",
         ...(tokenDetails.isOwner && {

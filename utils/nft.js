@@ -112,3 +112,9 @@ export const getAccountNftList = (address) => {
   }
   return [];
 };
+
+// retrive account related nft list form local storage
+export const getAllStoredNfts = () => {
+  const nfts = JSON.parse(localStorage.getItem("nfts"));
+  return nfts || {};
+};
