@@ -4,19 +4,33 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
+import copy from "clipboard-copy";
 
 import { BackButton } from "@/components";
 import { getNftImage } from "@/utils/nft";
 
 function DashboardComponent() {
-  const [imageURL, setImageURL] = useState('/img/nft.png');
+  const [imageURL, setImageURL] = useState("/img/nft.png");
+  const [isCopied, setIsCopied] = useState(false);
   const searchParams = useSearchParams();
   const address = searchParams.get("address");
   const contractAddress = searchParams.get("contractAddress");
   const tokenId = searchParams.get("tokenId");
   const symbol = searchParams.get("symbol");
   const nftName = searchParams.get("nftName");
+
+  const handleCopyClick = async () => {
+    try {
+      await copy(contractAddress);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 10000);
+    } catch (error) {
+      console.error("Failed to copy text to clipboard", error);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -36,35 +50,45 @@ function DashboardComponent() {
           <BackButton />
         </Box>
 
-        <Typography sx={{ fontSize: "18px", fontWeight: "600", mb: '1rem' }}>
+        <Typography sx={{ fontSize: "18px", fontWeight: "600", mb: "1rem" }}>
           {`${nftName} (#${tokenId})`}
         </Typography>
 
         <Box>
-          <Image
-            src={imageURL}
-            alt="ETH"
-            width={280}
-            height={224}
-            priority
-          />
+          <Image src={imageURL} alt="ETH" width={280} height={224} priority />
         </Box>
 
         <Typography
           sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
             textAlign: "center",
-            fontSize: "14px",
-            m: '1rem 0'
+
+            mt: "1rem",
           }}
         >
-          Contract Address: {contractAddress}
+          Contract Address
         </Typography>
+        <Tooltip
+          title={isCopied ? "Copied ✔" : "Click to Copy"}
+          placement="top-start"
+          arrow
+        >
+          <Typography
+            sx={{
+              fontSize: "14px",
+              color: "#0e64b9",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            onClick={handleCopyClick}
+          >
+            {contractAddress}
+          </Typography>
+        </Tooltip>
 
         <Button
-          sx={{ width: "100%", padding: "0", height: "2rem" }}
+          sx={{ width: "100%", padding: "0", height: "2rem", mt: "1.5rem" }}
           variant="contained"
         >
           <Link
