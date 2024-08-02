@@ -15,19 +15,17 @@ import {
 
 import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
-import { isAddress } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { sendTransaction, storeTransactionHistory } from "@/utils/transaction";
 import BackButton from "./BackButton";
 
-const SendCoins = ({ from, balance }) => {
+const SendCoins = ({ from, to, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
 
   const router = useRouter();
 
-  // schema for send transaction form or like that
+  // schema for send coins
   const formSchema = object({
-    to: string().required("Address is required"),
     amount: number()
       .positive("Enter valid amount")
       .required("Amount is required")
@@ -41,15 +39,7 @@ const SendCoins = ({ from, balance }) => {
 
   async function handleTransferSubmit(data, actions) {
     // Simulate a delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // check validity of address
-    const isValidAddress = isAddress(data.to);
-    if (!isValidAddress) {
-      actions.setErrors({ to: "Address is invalid" });
-      actions.setSubmitting(false);
-      return;
-    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // check for password
     const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
@@ -65,7 +55,7 @@ const SendCoins = ({ from, balance }) => {
 
     // send transaction
     const res = await sendTransaction({
-      to: data.to,
+      to,
       from,
       amount: data.amount,
       privateKey,
@@ -92,7 +82,6 @@ const SendCoins = ({ from, balance }) => {
     handleSubmit,
   } = useFormik({
     initialValues: {
-      to: "",
       amount: "",
       password: "",
     },
@@ -115,21 +104,24 @@ const SendCoins = ({ from, balance }) => {
           >
             Transfer Funds
           </Typography>
+
           <Box component="form" onSubmit={handleSubmit} autoComplete="off">
-            <FormControl fullWidth sx={{ minHeight: "80px" }}>
-              <OutlinedInput
-                name="to"
-                placeholder="Enter receiver address"
-                value={values.to}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                disabled={isSubmitting}
-                error={errors.to && touched.to ? true : false}
-              />
-              <FormHelperText sx={{ color: "red" }}>
-                {errors.to && touched.to ? errors.to : ""}
-              </FormHelperText>
-            </FormControl>
+            <Box>
+              <Typography
+                sx={{
+                  padding: "16.5px 14px",
+                  height: "56px",
+                  color: "#1b1f21",
+                  border: "1px solid rgba(0, 0, 0, 0.23)",
+                  borderRadius: "4px",
+                  marginBottom: "24px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {to}
+              </Typography>
+            </Box>
 
             <FormControl fullWidth sx={{ minHeight: "80px" }}>
               <OutlinedInput

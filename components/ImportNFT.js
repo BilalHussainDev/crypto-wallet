@@ -120,15 +120,6 @@ const ImportToken = ({ address }) => {
           </Alert>
         </Collapse>
       </Box>
-      {/* <Typography sx={{ mb: "1rem", textAlign: "left" }}>
-        {!message ? (
-          "Please provide the following details."
-        ) : (
-          <Typography component="span" sx={{ color: "#b90e0e" }}>
-            {message}
-          </Typography>
-        )}
-      </Typography> */}
 
       <Box component="form" onSubmit={handleSubmit} autoComplete="off">
         <FormControl fullWidth sx={{ minHeight: "80px" }}>
