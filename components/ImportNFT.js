@@ -23,7 +23,7 @@ const ImportToken = ({ address }) => {
   const [openAlert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
   const { nfts } = useNfts();
-  const nftList = nfts[address];
+  const nftList = nfts[address] || [];
   console.log('nfts');
   console.log(nftList);
   const router = useRouter();
