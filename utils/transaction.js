@@ -11,6 +11,38 @@ export const isAddress = (address) => {
   }
 };
 
+// give Estimated Fee
+export const getEstimatedFee = async ({ to, from, amount}) => {
+  try {
+    // create transaction
+    const transaction = {
+      from,
+      to,
+      value: web3.utils.toWei(amount, "ether"),
+    };
+
+    // calculate gas
+    transaction.gas = await web3.eth.estimateGas(transaction);
+
+    // calculate gas price
+    transaction.gasPrice = await web3.eth.getGasPrice();
+
+    // calculate fee for transaction
+    const fee = web3.utils.fromWei(gas * gasPrice, "ether");
+
+    return {
+      ok: true,
+      estimatedFee: +fee,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      message: err.message,
+    };
+  }
+};
+
+// send Transaction
 export const sendTransaction = async ({ to, from, amount, privateKey }) => {
   try {
     // create transaction

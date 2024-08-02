@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Box, Typography } from "@mui/material";
-import { SendTransaction } from "@/components";
+import { SendCoins } from "@/components";
 
 function SendFundsComponent() {
   const searchParams = useSearchParams();
@@ -14,7 +14,7 @@ function SendFundsComponent() {
     return <p>No account selected.</p>;
   }
 
-  return <SendTransaction from={address} balance={balance} />;
+  return <SendCoins from={address} balance={balance} />;
 }
 
 export default function SendFundsPage() {

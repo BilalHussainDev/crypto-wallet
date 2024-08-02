@@ -1,3 +1,4 @@
+'use client'
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
@@ -24,8 +25,6 @@ const ImportToken = ({ address }) => {
   const [message, setMessage] = useState("");
   const { nfts } = useNfts();
   const nftList = nfts[address] || [];
-  console.log('nfts');
-  console.log(nftList);
   const router = useRouter();
 
   // schema for import NFTs

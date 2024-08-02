@@ -1,3 +1,4 @@
+'use client'
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
@@ -22,7 +23,7 @@ import {
 } from "@/utils/transaction";
 import BackButton from "./BackButton";
 
-const SendTransaction = ({ from, balance }) => {
+const SendCoins = ({ from, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
 
   const router = useRouter();
@@ -220,4 +221,4 @@ const SendTransaction = ({ from, balance }) => {
   );
 };
 
-export default SendTransaction;
+export default SendCoins;

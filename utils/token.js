@@ -1,5 +1,5 @@
 import { getWeb3 } from "@/constants/web3";
-import { tokenABI } from '@/constants/abi';
+import { tokenABI } from "@/constants/abi";
 
 const web3 = getWeb3();
 
@@ -21,8 +21,8 @@ export async function getTokenDetails(tokenAddress) {
   } catch (error) {
     return {
       ok: false,
-      message: 'Invalid contract address'
-    }
+      message: "Invalid contract address",
+    };
   }
 }
 
@@ -32,8 +32,40 @@ export const getTokenBalance = async (address, tokenAddress) => {
   return web3.utils.fromWei(balance, "ether");
 };
 
+// give esimated transaction fee
+export async function getEstimatedFee({ contractAddress }) {
+  try {
+    const tokenContract = new web3.eth.Contract(tokenABI, contractAddress);
+
+    // Create transaction
+    const transaction = tokenContract.methods.transfer(
+      to,
+      web3.utils.toWei(amount, "ether")
+    );
+
+    const gas = await transaction.estimateGas({ from });
+    const gasPrice = await web3.eth.getGasPrice();
+    const fee = web3.utils.fromWei(gas * gasPrice, "ether");
+    return {
+      ok: true,
+      estimatedFee: +fee,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      message: err.message || "Failed while estimating fee",
+    };
+  }
+}
+
 // transfer tokens
-export async function sendToken({ from, to, amount, privateKey, tokenAddress }) {
+export async function sendToken({
+  from,
+  to,
+  amount,
+  privateKey,
+  tokenAddress,
+}) {
   try {
     const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
 
@@ -61,7 +93,9 @@ export async function sendToken({ from, to, amount, privateKey, tokenAddress }) 
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
 
     // Send signed transaction
-    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    const receipt = await web3.eth.sendSignedTransaction(
+      signedTx.rawTransaction
+    );
 
     return {
       ok: true,
@@ -83,12 +117,11 @@ export const storeToken = (address, tokenAddress) => {
 
   // check for already imported token
   if (!tokens[address] || !tokens[address].includes(tokenAddress)) {
-    
     // update transactions history
     tokens[address] = tokens[address]
-    ? [...tokens[address], tokenAddress]
-    : [tokenAddress];
-    
+      ? [...tokens[address], tokenAddress]
+      : [tokenAddress];
+
     // store transaction again in local storage
     localStorage.setItem("tokens", JSON.stringify(tokens));
   }

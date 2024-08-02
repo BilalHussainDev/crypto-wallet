@@ -1,3 +1,4 @@
+'use client';
 import { Box, CircularProgress, Typography } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/link";

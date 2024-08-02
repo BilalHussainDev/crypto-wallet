@@ -1,3 +1,4 @@
+'use client'
 import { useState } from "react";
 import { IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
