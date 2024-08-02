@@ -73,7 +73,7 @@ function Dashboard() {
             variant="outlined"
           >
             <Link
-              href={`/send-funds?address=${address}&balance=${balance}`}
+              href={`/send-to?from=${address}&balance=${balance}`}
               style={{ width: "100%" }}
             >
               Send

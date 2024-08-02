@@ -14,8 +14,9 @@ import {
 
 import { BackButton, ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
+import { isAddress } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import { isAddress, storeTransactionHistory } from "@/utils/transaction";
+import { storeTransactionHistory } from "@/utils/transaction";
 import { getEstimatedFee, sendNft } from "@/utils/nft";
 import Link from "next/link";
 

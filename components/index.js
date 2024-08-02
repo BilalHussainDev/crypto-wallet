@@ -11,4 +11,5 @@ export { default as NFTsTab } from "./NFTsTab";
 export { default as PasswordField } from "./PasswordField";
 export { default as SendCoins } from "./SendCoins";
 export { default as SendNft } from "./SendNft";
+export { default as ReceiverForm } from "./ReceiverForm";
 export { default as SendToken } from "./SendToken";

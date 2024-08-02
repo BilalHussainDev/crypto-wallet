@@ -16,8 +16,9 @@ import {
 import { BackButton, ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
 import { sendToken } from "@/utils/token";
+import { isAddress } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import { isAddress, storeTransactionHistory } from "@/utils/transaction";
+import { storeTransactionHistory } from "@/utils/transaction";
 
 const SendToken = ({ from, tokenAddress, symbol, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");

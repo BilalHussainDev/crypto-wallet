@@ -2,15 +2,6 @@ import { getWeb3 } from "@/constants/web3";
 
 const web3 = getWeb3();
 
-export const isAddress = (address) => {
-  // Validate the receiver address
-  if (!web3.utils.isAddress(address)) {
-    return false;
-  } else {
-    return true;
-  }
-};
-
 // give Estimated Fee
 export const getEstimatedFee = async ({ to, from, amount}) => {
   try {

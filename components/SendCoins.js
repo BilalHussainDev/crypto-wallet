@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormik } from "formik";
@@ -15,12 +15,9 @@ import {
 
 import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
+import { isAddress } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import {
-  isAddress,
-  sendTransaction,
-  storeTransactionHistory,
-} from "@/utils/transaction";
+import { sendTransaction, storeTransactionHistory } from "@/utils/transaction";
 import BackButton from "./BackButton";
 
 const SendCoins = ({ from, balance }) => {
@@ -35,10 +32,10 @@ const SendCoins = ({ from, balance }) => {
       .positive("Enter valid amount")
       .required("Amount is required")
       .test(
-          "is-balance-enough",
-          "You don't have enough balance",
-          (amount) => amount < balance
-        ),
+        "is-balance-enough",
+        "You don't have enough balance",
+        (amount) => amount < balance
+      ),
     password: string().required("Password is required"),
   });
 
