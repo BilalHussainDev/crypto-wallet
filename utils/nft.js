@@ -41,6 +41,34 @@ export const getNftImage = async (contractAddress, tokenId) => {
   return data.image;
 };
 
+// give esimated transaction fee
+export async function getEstimatedFee({
+  from,
+  to,
+  contractAddress,
+  tokenId,
+}) {
+  try {
+    const tokenContract = new web3.eth.Contract(nftABI, contractAddress);
+
+    // Create transaction
+    const transaction = tokenContract.methods.transferFrom(from, to, tokenId);
+
+    const gas = await transaction.estimateGas({ from });
+    const gasPrice = await web3.eth.getGasPrice();
+    const fee = web3.utils.fromWei(gas * gasPrice, "ether");
+    return {
+      ok: true,
+      estimatedFee: +fee
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      message: err.message || "Failed while estimating fee",
+    };
+  }
+}
+
 // transfer nft
 export async function sendNft({
   from,
@@ -113,7 +141,7 @@ export const getAccountNftList = (address) => {
   return [];
 };
 
-// retrive account related nft list form local storage
+// retrive all nfts form local storage
 export const getAllStoredNfts = () => {
   const nfts = JSON.parse(localStorage.getItem("nfts"));
   return nfts || {};

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import {
@@ -15,17 +15,25 @@ import { BackButton, ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { isAddress, storeTransactionHistory } from "@/utils/transaction";
-import { sendNft } from "@/utils/nft";
+import { getEstimatedFee, sendNft } from "@/utils/nft";
 import Link from "next/link";
-
-// schema for send transaction form or like that
-const formSchema = object({
-  to: string().required("Address is required"),
-  password: string().required("Password is required"),
-});
 
 const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
   const [transactionHash, setTransactionHash] = useState("");
+  const [estimatedFee, setEstimatedFee] = useState(0);
+
+  // schema for send transaction form or like that
+  const formSchema = object({
+    to: string().required("Address is required").test('estimate-fee', "Somethings wents wrong while estimating fee", async (to) => {
+      const res = await getEstimatedFee({from, to, contractAddress, tokenId});
+      if (res.ok) {
+        setEstimatedFee(res.estimatedFee);
+        return true
+      }
+      return false;
+    }),
+    password: string().required("Password is required"),
+  });
 
   async function handleTransferSubmit(data, actions) {
     // Simulate a delay
@@ -62,9 +70,7 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
 
     if (res.ok) {
       storeTransactionHistory(res.receipt, 0, symbol);
-      setTransactionHash(
-        res.receipt.transactionHash
-      );
+      setTransactionHash(res.receipt.transactionHash);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
@@ -89,6 +95,12 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
     validationSchema: formSchema,
     onSubmit: handleTransferSubmit,
   });
+
+  useEffect(() => {
+    async function fetchEstimatedFee() {
+      const fee = getEstimatedFee({});
+    }
+  }, []);
 
   return (
     <>
@@ -136,6 +148,25 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
                 {errors.password && touched.password ? errors.password : ""}
               </FormHelperText>
             </FormControl>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "1.5rem",
+                backgroundColor: "#bce4f6",
+                border: "1px solid #f1fbff",
+                borderRadius: "4px",
+                padding: "14px",
+              }}
+            >
+              <Typography fontWeight="bold">
+                Gas price &#40;estimated&#41;:
+              </Typography>
+              <Typography fontWeight="bold" color="primary">
+                {estimatedFee.toFixed(6)} ETH
+              </Typography>
+            </Box>
 
             {isSubmitting ? (
               <ButtonLoader>Transfering.....</ButtonLoader>
