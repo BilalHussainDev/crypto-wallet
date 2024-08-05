@@ -1,7 +1,8 @@
 'use client';
-import { getTransactionHistory } from "@/utils/transaction";
-import { Box, Typography } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import { getTransactionHistory } from "@/utils/transaction";
 
 export default function ActivityTab({ address, activityOf }) {
   const [transactions, setTransactions] = useState([]);
@@ -30,22 +31,27 @@ export default function ActivityTab({ address, activityOf }) {
       ) : (
         <Box component="ul">
           {transactions.map((tx, index) => (
-            <Box
-              sx={{
-                borderBottom: "1px solid #1976d2",
-                padding: "0.5rem",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
-              }}
-              component="li"
+            <Link
+              href={`https://www.oklink.com/amoy/tx/${tx.transactionHash}`}
+              target="_blank"
               key={index}
             >
-              <Typography textAlign="left">{tx.transactionDate}</Typography>
-              <Typography sx={{ color: "#1976d2" }}>
-                {tx.amount} {tx.symbol}
-              </Typography>
-              <Typography textAlign="right">Send</Typography>
-            </Box>
+              <Box
+                sx={{
+                  borderBottom: "1px solid #1976d2",
+                  padding: "0.5rem",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                }}
+                component="li"
+              >
+                <Typography textAlign="left">{tx.transactionDate}</Typography>
+                <Typography sx={{ color: "#1976d2" }}>
+                  {tx.amount} {tx.symbol}
+                </Typography>
+                <Typography textAlign="right">Send</Typography>
+              </Box>
+            </Link>
           ))}
         </Box>
       )}
