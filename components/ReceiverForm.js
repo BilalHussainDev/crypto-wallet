@@ -39,7 +39,7 @@ export default function ReceiverForm({from, balance, tokenAddress, symbol, next}
 
   async function handleSearchAddress(data, actions) {
     // Simulate a delay
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // check validity of address
     const isValidAddress = isAddress(data.to);

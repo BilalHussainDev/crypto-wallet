@@ -17,11 +17,8 @@ import {
 import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import {
-  getEstimatedFee,
-  sendTransaction,
-  storeTransactionHistory,
-} from "@/utils/transaction";
+import { getEstimatedFee, sendCoins } from "@/utils/coin";
+import { storeTransactionHistory } from "@/utils/transaction";
 import BackButton from "./BackButton";
 
 const SendCoins = ({ from, to, balance }) => {
@@ -76,7 +73,7 @@ const SendCoins = ({ from, to, balance }) => {
     const { privateKey } = getAccountFromMnemonic(key);
 
     // send transaction
-    const res = await sendTransaction({
+    const res = await sendCoins({
       to,
       from,
       amount: data.amount,
