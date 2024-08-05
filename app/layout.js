@@ -1,7 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import { NftsProvider } from "@/contexts/nftsContext";
+import { NftsProvider } from "@/contexts/NftContext";
+import { ActiveTabProvider } from "@/contexts/ActiveTabContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
           <main id="main">
             <div style={{ padding: "0 16px" }}>
               <NftsProvider>
-                {children}
+                <ActiveTabProvider>
+                  {children}
+                </ActiveTabProvider>
               </NftsProvider>
             </div>
           </main>

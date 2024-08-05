@@ -19,12 +19,14 @@ import { decrypt } from "@/utils/encrypt";
 import { sendToken, getEstimatedFee } from "@/utils/token";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { storeTransactionHistory } from "@/utils/transaction";
+import { useActiveTab } from "@/contexts/ActiveTabContext";
 
 const SendToken = ({ from, to, balance, tokenAddress, symbol }) => {
   const [transactionHash, setTransactionHash] = useState("");
   const [estimatedFee, setEstimatedFee] = useState(0);
 
   const router = useRouter();
+  const { setActiveTab } = useActiveTab();
 
   // schema for send tokens
   const formSchema = object({
@@ -84,6 +86,7 @@ const SendToken = ({ from, to, balance, tokenAddress, symbol }) => {
     if (res.ok) {
       storeTransactionHistory(res.receipt, data.amount, symbol);
       setTransactionHash(res.receipt.transactionHash);
+      setActiveTab(1);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);

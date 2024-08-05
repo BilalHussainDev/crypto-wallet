@@ -16,7 +16,7 @@ import {
 import { BackButton, ButtonLoader } from ".";
 import { getNftDetails, storeNFT } from "@/utils/nft";
 import { useState } from "react";
-import { useNfts } from "@/contexts/nftsContext";
+import { useNfts } from "@/contexts/NftContext";
 
 const addressRules = /^0x[a-fA-F0-9]{40}$/;
 

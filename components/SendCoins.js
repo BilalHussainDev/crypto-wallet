@@ -19,6 +19,7 @@ import { decrypt } from "@/utils/encrypt";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { getEstimatedFee, sendCoins } from "@/utils/coin";
 import { storeTransactionHistory } from "@/utils/transaction";
+import { useActiveTab } from "@/contexts/ActiveTabContext";
 import BackButton from "./BackButton";
 
 const SendCoins = ({ from, to, balance }) => {
@@ -26,6 +27,7 @@ const SendCoins = ({ from, to, balance }) => {
   const [estimatedFee, setEstimatedFee] = useState(0);
 
   const router = useRouter();
+  const { setActiveTab } = useActiveTab();
 
   // schema for send coins
   const formSchema = object({
@@ -83,6 +85,7 @@ const SendCoins = ({ from, to, balance }) => {
     if (res.ok) {
       storeTransactionHistory(res.receipt, data.amount, "MATIC");
       setTransactionHash(res.receipt.transactionHash);
+      setActiveTab(1);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
@@ -196,9 +199,7 @@ const SendCoins = ({ from, to, balance }) => {
                 padding: "14px",
               }}
             >
-              <Typography fontWeight="bold">
-                Estimated fee:
-              </Typography>
+              <Typography fontWeight="bold">Estimated fee:</Typography>
               <Typography fontWeight="bold" color="primary">
                 {estimatedFee.toFixed(8)} MATIC
               </Typography>

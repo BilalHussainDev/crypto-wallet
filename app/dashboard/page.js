@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Box, Button, Typography } from "@mui/material";
-
 import { getBalance } from "@/utils/account";
 import { DashboardTabs } from "@/components";
 
@@ -40,7 +39,6 @@ function Dashboard() {
         >
           {address}
         </Typography>
-
         <Box margin={1} sx={{ filter: "drop-shadow(-2px 4px 6px #2063a5)" }}>
           <Image
             src="/img/matic.svg"
@@ -50,7 +48,6 @@ function Dashboard() {
             priority
           />
         </Box>
-
         <Box sx={{ display: "flex", justifyContent: "center", height: "28px" }}>
           {balance === undefined ? (
             <div className="loader"></div>
@@ -60,7 +57,6 @@ function Dashboard() {
             </Typography>
           )}
         </Box>
-
         <Box
           sx={{
             margin: "1.5rem 0 1rem 0",

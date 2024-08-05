@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import PropTypes from "prop-types";
 import ActivityTab from "./ActivityTab";
 import AssetsTab from "./AssetsTab";
 import NFTsTab from "./NFTsTab";
+import { useActiveTab } from "@/contexts/ActiveTabContext";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,19 +36,19 @@ function a11yProps(index) {
 }
 
 export default function DashboardTabs({ address }) {
-  const [value, setValue] = useState(2);
+  const {activeTab, setActiveTab} = useActiveTab();
 
   const tabStyles = { width: "33%", textTransform: "none", fontSize: "1rem" };
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setActiveTab(newValue);
   };
 
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          value={value}
+          value={activeTab}
           onChange={handleChange}
           aria-label="basic tabs"
           centered
@@ -60,15 +60,15 @@ export default function DashboardTabs({ address }) {
         </Tabs>
       </Box>
 
-      <CustomTabPanel value={value} index={0}>
+      <CustomTabPanel value={activeTab} index={0}>
         <AssetsTab address={address} />
       </CustomTabPanel>
 
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={activeTab} index={1}>
         <ActivityTab address={address} />
       </CustomTabPanel>
 
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={activeTab} index={2}>
         <NFTsTab address={address} />
       </CustomTabPanel>
     </Box>

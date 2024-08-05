@@ -19,10 +19,13 @@ import { isAddress } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { storeTransactionHistory } from "@/utils/transaction";
 import { getEstimatedFee, sendNft } from "@/utils/nft";
+import { useActiveTab } from "@/contexts/ActiveTabContext";
 
 const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
   const [transactionHash, setTransactionHash] = useState("");
   const [estimatedFee, setEstimatedFee] = useState(0);
+
+  const { setActiveTab } = useActiveTab();
 
   // schema for send transaction form or like that
   const formSchema = object({
@@ -84,6 +87,7 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
     if (res.ok) {
       storeTransactionHistory(res.receipt, 0, symbol);
       setTransactionHash(res.receipt.transactionHash);
+      setActiveTab(1);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);

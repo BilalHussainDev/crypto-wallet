@@ -4,7 +4,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getAllStoredNfts, getNftDetails } from "@/utils/nft";
-import { useNfts } from "@/contexts/nftsContext";
+import { useNfts } from "@/contexts/NftContext";
 
 export default function NFTsTab({ address }) {
   const [nftDetailsList, setNftDetailsList] = useState(null);
