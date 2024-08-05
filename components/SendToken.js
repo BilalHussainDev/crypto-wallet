@@ -201,10 +201,10 @@ const SendToken = ({ from, to, balance, tokenAddress, symbol }) => {
               }}
             >
               <Typography fontWeight="bold">
-                Gas price &#40;estimated&#41;:
+                Estimated fee:
               </Typography>
               <Typography fontWeight="bold" color="primary">
-                {estimatedFee.toFixed(8)} ETH
+                {estimatedFee.toFixed(8)} MATIC
               </Typography>
             </Box>
 

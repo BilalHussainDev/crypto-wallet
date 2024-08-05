@@ -50,7 +50,7 @@ function DashboardComponent() {
         <Box>
           <Image
             src="/img/bobbin.png"
-            alt="ETH"
+            alt="MATIC"
             width={100}
             height={100}
             priority

@@ -41,12 +41,12 @@ function Dashboard() {
           {address}
         </Typography>
 
-        <Box>
+        <Box margin={1} sx={{ filter: "drop-shadow(-2px 4px 6px #2063a5)" }}>
           <Image
-            src="/img/ethereum.png"
-            alt="ETH"
-            width={100}
-            height={100}
+            src="/img/matic.svg"
+            alt="MATIC"
+            width={80}
+            height={80}
             priority
           />
         </Box>
@@ -56,14 +56,14 @@ function Dashboard() {
             <div className="loader"></div>
           ) : (
             <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              {balance.toFixed(4)} ETH
+              {balance.toFixed(4)} MATIC
             </Typography>
           )}
         </Box>
 
         <Box
           sx={{
-            margin: "1.5rem 0",
+            margin: "1.5rem 0 1rem 0",
             display: "flex",
             justifyContent: "space-evenly",
           }}

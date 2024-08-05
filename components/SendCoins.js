@@ -81,7 +81,7 @@ const SendCoins = ({ from, to, balance }) => {
     });
 
     if (res.ok) {
-      storeTransactionHistory(res.receipt, data.amount, "ETH");
+      storeTransactionHistory(res.receipt, data.amount, "MATIC");
       setTransactionHash(res.receipt.transactionHash);
       actions.resetForm();
     } else {
@@ -157,7 +157,7 @@ const SendCoins = ({ from, to, balance }) => {
             <FormControl fullWidth sx={{ minHeight: "80px" }}>
               <OutlinedInput
                 name="amount"
-                placeholder="Enter amount in eth"
+                placeholder="Enter amount in matic"
                 type="number"
                 value={values.amount}
                 onChange={handleChange}
@@ -197,10 +197,10 @@ const SendCoins = ({ from, to, balance }) => {
               }}
             >
               <Typography fontWeight="bold">
-                Gas price &#40;estimated&#41;:
+                Estimated fee:
               </Typography>
               <Typography fontWeight="bold" color="primary">
-                {estimatedFee.toFixed(8)} ETH
+                {estimatedFee.toFixed(8)} MATIC
               </Typography>
             </Box>
 

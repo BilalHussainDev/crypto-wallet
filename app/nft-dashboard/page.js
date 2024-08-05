@@ -55,13 +55,18 @@ function DashboardComponent() {
         </Typography>
 
         <Box>
-          <Image src={imageURL} alt="ETH" width={280} height={224} priority />
+          <Image
+            src={imageURL}
+            alt="token-logo"
+            width={280}
+            height={224}
+            priority
+          />
         </Box>
 
         <Typography
           sx={{
             textAlign: "center",
-
             mt: "1rem",
           }}
         >

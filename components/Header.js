@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import Image from "next/image";
 
 export default function Header() {
   return (
@@ -18,14 +19,16 @@ export default function Header() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#0c668f",
+          border: "2px solid #1976d2",
         }}
       >
-        <Typography
-          sx={{ color: "#c7dbdf", fontSize: "10px", fontWeight: "bold" }}
-        >
-          ETH
-        </Typography>
+        <Image
+          src="/img/matic.svg"
+          alt="MATIC"
+          width={20}
+          height={20}
+          priority
+        />
       </Box>
 
       <Box

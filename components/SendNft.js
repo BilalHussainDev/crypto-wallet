@@ -174,10 +174,10 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
               }}
             >
               <Typography fontWeight="bold">
-                Gas price &#40;estimated&#41;:
+                Estimated fee:
               </Typography>
               <Typography fontWeight="bold" color="primary">
-                {estimatedFee.toFixed(6)} ETH
+                {estimatedFee.toFixed(8)} MATIC
               </Typography>
             </Box>
 
