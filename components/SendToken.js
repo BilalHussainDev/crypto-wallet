@@ -1,6 +1,6 @@
-'use client'
+"use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import {
@@ -15,19 +15,18 @@ import {
 
 import { BackButton, ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
-import { sendToken } from "@/utils/token";
-import { isAddress } from "@/utils/account";
+import { sendToken, getEstimatedFee } from "@/utils/token";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { storeTransactionHistory } from "@/utils/transaction";
 
-const SendToken = ({ from, tokenAddress, symbol, balance }) => {
+const SendToken = ({ from, to, balance, tokenAddress, symbol }) => {
   const [transactionHash, setTransactionHash] = useState("");
+  const [estimatedFee, setEstimatedFee] = useState(0);
 
   const router = useRouter();
 
-  // schema for send transaction form or like that
+  // schema for send tokens
   const formSchema = object({
-    to: string().required("Address is required"),
     amount: number()
       .positive("Enter valid amount")
       .required("Amount is required")
@@ -35,6 +34,23 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
         "is-balance-enough",
         "You don't have enough balance",
         (amount) => amount < balance
+      )
+      .test(
+        "estimate-fee",
+        "Somethings wents wrong while estimating fee",
+        async (amount) => {
+          const res = await getEstimatedFee({
+            from,
+            to,
+            amount: amount.toString(),
+            tokenAddress
+          });
+          if (res.ok) {
+            setEstimatedFee(res.estimatedFee);
+            return true;
+          }
+          return false;
+        }
       ),
     password: string().required("Password is required"),
   });
@@ -42,14 +58,6 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
   async function handleTransferSubmit(data, actions) {
     // Simulate a delay
     await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // check validity of address
-    const isValidAddress = isAddress(data.to);
-    if (!isValidAddress) {
-      actions.setErrors({ to: "Address is invalid" });
-      actions.setSubmitting(false);
-      return;
-    }
 
     // check for password
     const encryptedKey = JSON.parse(localStorage.getItem("encryptedKey"));
@@ -65,7 +73,7 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
 
     // send transaction
     const res = await sendToken({
-      to: data.to,
+      to,
       from,
       amount: data.amount,
       privateKey,
@@ -74,9 +82,7 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
 
     if (res.ok) {
       storeTransactionHistory(res.receipt, data.amount, symbol);
-      setTransactionHash(
-        res.receipt.transactionHash
-      );
+      setTransactionHash(res.receipt.transactionHash);
       actions.resetForm();
     } else {
       actions.setSubmitting(false);
@@ -95,7 +101,6 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
     handleSubmit,
   } = useFormik({
     initialValues: {
-      to: "",
       amount: "",
       password: "",
     },
@@ -103,36 +108,54 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
     onSubmit: handleTransferSubmit,
   });
 
+  useEffect(() => {
+    getEstimatedFee({
+      from,
+      to,
+      amount: "0",
+      tokenAddress,
+    }).then((res) => {
+      if (res.ok) {
+        setEstimatedFee(res.estimatedFee);
+      } else {
+        console.log(res)
+      }
+    });
+  }, []);
+
   return (
     <>
       {!transactionHash && (
         <>
-          <Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+          <Box sx={{ margin: "1rem 0 0.5rem 0", textAlign: "left" }}>
             <BackButton />
           </Box>
 
           <Typography
             component="h1"
             variant="h5"
-            sx={{ mb: "2rem", fontWeight: "bold" }}
+            sx={{ mb: "1rem", fontWeight: "bold" }}
           >
             Transfer Tokens
           </Typography>
+
           <Box component="form" onSubmit={handleSubmit} autoComplete="off">
-            <FormControl fullWidth sx={{ minHeight: "80px" }}>
-              <OutlinedInput
-                name="to"
-                placeholder="Enter receiver address"
-                value={values.to}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                disabled={isSubmitting}
-                error={errors.to && touched.to ? true : false}
-              />
-              <FormHelperText sx={{ color: "red" }}>
-                {errors.to && touched.to ? errors.to : ""}
-              </FormHelperText>
-            </FormControl>
+            <Box>
+              <Typography
+                sx={{
+                  padding: "16.5px 14px",
+                  height: "56px",
+                  color: "#1b1f21",
+                  border: "1px solid rgba(0, 0, 0, 0.23)",
+                  borderRadius: "4px",
+                  marginBottom: "24px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {to}
+              </Typography>
+            </Box>
 
             <FormControl fullWidth sx={{ minHeight: "80px" }}>
               <OutlinedInput
@@ -164,6 +187,25 @@ const SendToken = ({ from, tokenAddress, symbol, balance }) => {
                 {errors.password && touched.password ? errors.password : ""}
               </FormHelperText>
             </FormControl>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "1.5rem",
+                backgroundColor: "#bce4f6",
+                border: "1px solid #f1fbff",
+                borderRadius: "4px",
+                padding: "14px",
+              }}
+            >
+              <Typography fontWeight="bold">
+                Gas price &#40;estimated&#41;:
+              </Typography>
+              <Typography fontWeight="bold" color="primary">
+                {estimatedFee.toFixed(8)} ETH
+              </Typography>
+            </Box>
 
             {isSubmitting ? (
               <ButtonLoader>Transfering.....</ButtonLoader>

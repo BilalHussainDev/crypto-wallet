@@ -202,7 +202,7 @@ const SendCoins = ({ from, to, balance }) => {
                 Gas price &#40;estimated&#41;:
               </Typography>
               <Typography fontWeight="bold" color="primary">
-                {estimatedFee.toFixed(6)} ETH
+                {estimatedFee.toFixed(8)} ETH
               </Typography>
             </Box>
 

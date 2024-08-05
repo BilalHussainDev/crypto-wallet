@@ -33,9 +33,9 @@ export const getTokenBalance = async (address, tokenAddress) => {
 };
 
 // give esimated transaction fee
-export async function getEstimatedFee({ contractAddress }) {
+export async function getEstimatedFee({ from, to, amount, tokenAddress }) {
   try {
-    const tokenContract = new web3.eth.Contract(tokenABI, contractAddress);
+    const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
 
     // Create transaction
     const transaction = tokenContract.methods.transfer(
@@ -46,6 +46,7 @@ export async function getEstimatedFee({ contractAddress }) {
     const gas = await transaction.estimateGas({ from });
     const gasPrice = await web3.eth.getGasPrice();
     const fee = web3.utils.fromWei(gas * gasPrice, "ether");
+    
     return {
       ok: true,
       estimatedFee: +fee,

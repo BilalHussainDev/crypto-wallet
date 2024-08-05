@@ -79,7 +79,7 @@ function DashboardComponent() {
             variant="outlined"
           >
             <Link
-              href={`/send-tokens?address=${address}&tokenAddress=${tokenAddress}&symbol=${symbol}&balance=${balance}`}
+              href={`/send-to?from=${address}&balance=${balance}&tokenAddress=${tokenAddress}&symbol=${symbol}&next=send-tokens`}
               style={{ width: "100%" }}
             >
               Send
@@ -111,7 +111,7 @@ function DashboardComponent() {
           Activity
         </Typography>
 
-        <Box mb='1rem'>
+        <Box mb="1rem">
           <ActivityTab address={address} activityOf={symbol} />
         </Box>
       </Box>

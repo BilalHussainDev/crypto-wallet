@@ -4,6 +4,9 @@ import { Box, Typography } from "@mui/material";
 export default function SendToPage({searchParams}) {
   const from = searchParams.from;
   const balance = searchParams.balance;
+  const next = searchParams.next;
+  const tokenAddress = searchParams.tokenAddress
+  const symbol = searchParams.symbol
 
   return (
     <>
@@ -19,7 +22,7 @@ export default function SendToPage({searchParams}) {
         Send To
       </Typography>
 
-      <ReceiverForm from={from} balance={balance} />
+      <ReceiverForm from={from} balance={balance} tokenAddress={tokenAddress} symbol={symbol} next={next} />
     </>
   );
 }

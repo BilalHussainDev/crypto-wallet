@@ -17,7 +17,7 @@ const formSchema = object({
   to: string().required("Address is required"),
 });
 
-export default function ReceiverForm({from, balance}) {
+export default function ReceiverForm({from, balance, tokenAddress, symbol, next}) {
   const router = useRouter();
 
   // Extracting Form State and Helper Methods from formik
@@ -49,7 +49,7 @@ export default function ReceiverForm({from, balance}) {
       return;
     }
 
-    router.replace(`/send-funds?from=${from}&to=${data.to}&balance=${balance}`);
+    router.replace(`/${next}?from=${from}&to=${data.to}&balance=${balance}&tokenAddress=${tokenAddress}&symbol=${symbol}`);
   }
 
   return (
