@@ -42,6 +42,10 @@ export default function ActivityTab({ address, activityOf }) {
                   padding: "0.5rem",
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr 1fr",
+                  transition: "0.2s",
+                  "&:hover": {
+                    backgroundColor: "#bbeaff",
+                  },
                 }}
                 component="li"
               >
