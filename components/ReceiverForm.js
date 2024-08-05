@@ -49,7 +49,7 @@ export default function ReceiverForm({from, balance}) {
       return;
     }
 
-    router.push(`/send-funds?from=${from}&to=${data.to}&balance=${balance}`);
+    router.replace(`/send-funds?from=${from}&to=${data.to}&balance=${balance}`);
   }
 
   return (

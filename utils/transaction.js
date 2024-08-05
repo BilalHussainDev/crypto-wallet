@@ -13,10 +13,10 @@ export const getEstimatedFee = async ({ to, from, amount}) => {
     };
 
     // calculate gas
-    transaction.gas = await web3.eth.estimateGas(transaction);
+    const gas = await web3.eth.estimateGas(transaction);
 
     // calculate gas price
-    transaction.gasPrice = await web3.eth.getGasPrice();
+    const gasPrice = await web3.eth.getGasPrice();
 
     // calculate fee for transaction
     const fee = web3.utils.fromWei(gas * gasPrice, "ether");
@@ -26,6 +26,7 @@ export const getEstimatedFee = async ({ to, from, amount}) => {
       estimatedFee: +fee,
     };
   } catch (err) {
+    console.log(err);
     return {
       ok: false,
       message: err.message,

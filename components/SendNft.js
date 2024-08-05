@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
@@ -26,14 +26,25 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
 
   // schema for send transaction form or like that
   const formSchema = object({
-    to: string().required("Address is required").test('estimate-fee', "Somethings wents wrong while estimating fee", async (to) => {
-      const res = await getEstimatedFee({from, to, contractAddress, tokenId});
-      if (res.ok) {
-        setEstimatedFee(res.estimatedFee);
-        return true
-      }
-      return false;
-    }),
+    to: string()
+      .required("Address is required")
+      .test(
+        "estimate-fee",
+        "Somethings wents wrong while estimating fee",
+        async (to) => {
+          const res = await getEstimatedFee({
+            from,
+            to,
+            contractAddress,
+            tokenId,
+          });
+          if (res.ok) {
+            setEstimatedFee(res.estimatedFee);
+            return true;
+          }
+          return false;
+        }
+      ),
     password: string().required("Password is required"),
   });
 

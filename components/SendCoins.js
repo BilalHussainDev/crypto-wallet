@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import {
@@ -16,11 +16,16 @@ import {
 import { ButtonLoader, PasswordField, Logo } from ".";
 import { decrypt } from "@/utils/encrypt";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
-import { sendTransaction, storeTransactionHistory } from "@/utils/transaction";
+import {
+  getEstimatedFee,
+  sendTransaction,
+  storeTransactionHistory,
+} from "@/utils/transaction";
 import BackButton from "./BackButton";
 
 const SendCoins = ({ from, to, balance }) => {
   const [transactionHash, setTransactionHash] = useState("");
+  const [estimatedFee, setEstimatedFee] = useState(0);
 
   const router = useRouter();
 
@@ -33,6 +38,22 @@ const SendCoins = ({ from, to, balance }) => {
         "is-balance-enough",
         "You don't have enough balance",
         (amount) => amount < balance
+      )
+      .test(
+        "estimate-fee",
+        "Somethings wents wrong while estimating fee",
+        async (amount) => {
+          const res = await getEstimatedFee({
+            from,
+            to,
+            amount: amount.toString(),
+          });
+          if (res.ok) {
+            setEstimatedFee(res.estimatedFee);
+            return true;
+          }
+          return false;
+        }
       ),
     password: string().required("Password is required"),
   });
@@ -89,18 +110,30 @@ const SendCoins = ({ from, to, balance }) => {
     onSubmit: handleTransferSubmit,
   });
 
+  useEffect(() => {
+    getEstimatedFee({
+      from,
+      to,
+      amount: "0",
+    }).then((res) => {
+      if (res.ok) {
+        setEstimatedFee(res.estimatedFee);
+      }
+    });
+  }, []);
+
   return (
     <>
       {!transactionHash && (
         <>
-          <Box sx={{ margin: "1rem 0", textAlign: "left" }}>
+          <Box sx={{ margin: "1rem 0 0.5rem 0", textAlign: "left" }}>
             <BackButton />
           </Box>
 
           <Typography
             component="h1"
             variant="h5"
-            sx={{ mb: "2rem", fontWeight: "bold" }}
+            sx={{ mb: "1rem", fontWeight: "bold" }}
           >
             Transfer Funds
           </Typography>
@@ -153,6 +186,25 @@ const SendCoins = ({ from, to, balance }) => {
                 {errors.password && touched.password ? errors.password : ""}
               </FormHelperText>
             </FormControl>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "1.5rem",
+                backgroundColor: "#bce4f6",
+                border: "1px solid #f1fbff",
+                borderRadius: "4px",
+                padding: "14px",
+              }}
+            >
+              <Typography fontWeight="bold">
+                Gas price &#40;estimated&#41;:
+              </Typography>
+              <Typography fontWeight="bold" color="primary">
+                {estimatedFee.toFixed(6)} ETH
+              </Typography>
+            </Box>
 
             {isSubmitting ? (
               <ButtonLoader>Transfering.....</ButtonLoader>
