@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
@@ -18,7 +19,6 @@ import { isAddress } from "@/utils/account";
 import { getAccountFromMnemonic } from "@/utils/mnemonic";
 import { storeTransactionHistory } from "@/utils/transaction";
 import { getEstimatedFee, sendNft } from "@/utils/nft";
-import Link from "next/link";
 
 const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
   const [transactionHash, setTransactionHash] = useState("");
@@ -220,7 +220,12 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
                 color: "#1565c0",
               }}
             >
-              {transactionHash}
+              <Link
+                href={`https://www.oklink.com/amoy/tx/${transactionHash}`}
+                target="_blank"
+              >
+                {transactionHash}
+              </Link>
             </Typography>
           </Tooltip>
 

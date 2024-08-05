@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
@@ -246,7 +247,12 @@ const SendToken = ({ from, to, balance, tokenAddress, symbol }) => {
                 color: "#1565c0",
               }}
             >
-              {transactionHash}
+              <Link
+                href={`https://www.oklink.com/amoy/tx/${transactionHash}`}
+                target="_blank"
+              >
+                {transactionHash}
+              </Link>
             </Typography>
           </Tooltip>
 
