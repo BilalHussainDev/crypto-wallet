@@ -121,7 +121,7 @@ const SendCoins = ({ from, to, balance }) => {
         setEstimatedFee(res.estimatedFee);
       }
     });
-  }, []);
+  }, [from, to]);
 
   return (
     <>

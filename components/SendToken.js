@@ -125,7 +125,7 @@ const SendToken = ({ from, to, balance, tokenAddress, symbol }) => {
         console.log(res)
       }
     });
-  }, []);
+  }, [from, to, tokenAddress]);
 
   return (
     <>

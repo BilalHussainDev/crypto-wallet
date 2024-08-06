@@ -46,7 +46,7 @@ export default function NFTsTab({ address }) {
     };
 
     fetchTokens();
-  }, [address]);
+  }, [address, setNfts]);
 
   return (
     <>
