@@ -23,8 +23,8 @@ export default function Header() {
         }}
       >
         <Image
-          src="/img/matic.svg"
-          alt="MATIC"
+          src="/img/pol.svg"
+          alt="POL"
           width={20}
           height={20}
           priority

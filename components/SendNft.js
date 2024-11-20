@@ -181,7 +181,7 @@ const SendNft = ({ from, contractAddress, tokenId, symbol }) => {
                 Estimated fee:
               </Typography>
               <Typography fontWeight="bold" color="primary">
-                {estimatedFee.toFixed(8)} MATIC
+                {estimatedFee.toFixed(8)} POL
               </Typography>
             </Box>
 

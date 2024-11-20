@@ -41,8 +41,8 @@ function Dashboard() {
         </Typography>
         <Box margin={1} sx={{ filter: "drop-shadow(-2px 4px 6px #2063a5)" }}>
           <Image
-            src="/img/matic.svg"
-            alt="MATIC"
+            src="/img/pol.svg"
+            alt="POL"
             width={80}
             height={80}
             priority
@@ -53,7 +53,7 @@ function Dashboard() {
             <div className="loader"></div>
           ) : (
             <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              {balance.toFixed(4)} MATIC
+              {balance.toFixed(4)} POL
             </Typography>
           )}
         </Box>

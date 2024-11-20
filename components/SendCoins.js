@@ -83,7 +83,7 @@ const SendCoins = ({ from, to, balance }) => {
     });
 
     if (res.ok) {
-      storeTransactionHistory(res.receipt, data.amount, "MATIC");
+      storeTransactionHistory(res.receipt, data.amount, "POL");
       setTransactionHash(res.receipt.transactionHash);
       setActiveTab(1);
       actions.resetForm();
@@ -160,7 +160,7 @@ const SendCoins = ({ from, to, balance }) => {
             <FormControl fullWidth sx={{ minHeight: "80px" }}>
               <OutlinedInput
                 name="amount"
-                placeholder="Enter amount in matic"
+                placeholder="Enter amount in pol"
                 type="number"
                 value={values.amount}
                 onChange={handleChange}
@@ -201,7 +201,7 @@ const SendCoins = ({ from, to, balance }) => {
             >
               <Typography fontWeight="bold">Estimated fee:</Typography>
               <Typography fontWeight="bold" color="primary">
-                {estimatedFee.toFixed(8)} MATIC
+                {estimatedFee.toFixed(8)} POL
               </Typography>
             </Box>
 
